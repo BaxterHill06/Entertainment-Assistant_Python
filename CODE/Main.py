@@ -4,7 +4,7 @@
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
 Version 5
-last updated: 19/06/23
+last updated: 20/06/23
 '''
 
 from tkinter import *
@@ -13,10 +13,13 @@ from Frames import *
 from functions import *
 
 window = Tk()
+#change if on different screen
+#use _____x____+_____+____
 window.attributes('-fullscreen', True)
 
 #gather images
-plus, empLogo = GetImages()
+GetImages()
+
 
 #create Exit bar
 ExitCreate(window)
@@ -24,9 +27,10 @@ ExitCreate(window)
 #collect screen size to allow for place functions
 space = screenSpace()
 
+
 #create screens
-frmLogin = LoginCreate(window,plus,space)
-frmAddAccount = AddAccountCreate(window,space)
+frmLogin = LoginCreate(window,space)
+AddAccountCreate(window,space)
 
 #load screen
 LoginLoad(frmLogin)
