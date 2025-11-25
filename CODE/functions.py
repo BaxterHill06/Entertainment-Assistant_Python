@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 14
-last updated: 30/08/23
+Version 15
+last updated: 19/09/23
 '''
 
 
@@ -309,15 +309,18 @@ def NeuralNetwork(dfUser, dfTestMovie):
     model.compile(optimizer=optimizer, loss="mean_squared_error", metrics=["accuracy"])
 
     # Train the model
-    model.fit(trainData, trainRating, epochs=100, batch_size=32, validation_split=0.2)
+    try:
+        model.fit(trainData, trainRating, epochs=100, batch_size=32, validation_split=0.2)
 
-    print("\n\n\n\n\n" , dfTestMovie)
-    """
-    prediction = model.predict(testData)
-    print(prediction)
-    """
+        print("\n\n\n\n\n" , dfTestMovie)
+        """
+        prediction = model.predict(testData)
+        print(prediction)
+        """
 
-    arPrediction = NetworkPrediction(model, dfTestMovie)
+        arPrediction = NetworkPrediction(model, dfTestMovie)
+    except:
+        arPrediction = 0
 
     return arPrediction
 

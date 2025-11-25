@@ -1,7 +1,7 @@
 Title,File,Genre,Type,Length,Year,Rating
-Shrek,Shrek.png,Fantasy/Comedy,Movie,90,2001,-1.0
-Rise Of The Guardians,Rise of the Guardians.png,Animated,Movie,97,2012,85.0
-Shrek 2,Shrek 2.png,Comedy/Adventure,Movie,105,2004,-1.0
+Shrek,Shrek.png,Fantasy/Comedy,Movie,90,2001,76.0
+Rise Of The Guardians,Rise of the Guardians.png,Animated,Movie,97,2012,55.0
+Shrek 2,Shrek 2.png,Comedy/Adventure,Movie,105,2004,99.0
 Shrek the Third,Shrek the Third.png,Family/Adventure,Movie,93,2007,-1.0
 The Wizard of Oz,The Wizard of Oz.png,Musical/Fantasy,Movie,112,1939,78.0
 Journey Back to Oz,Journey Back to Oz.png,Fantasy/Family,Movie,88,1972,-1.0
@@ -15,7 +15,7 @@ Journey 2 The Mysterious Island,Journey 2 The Mysterious Island.png,Action/Adven
 Halloween,Halloween.png,Horror/Thriller,Movie,91,1978,80.0
 Halloween II,Halloween II.png,Horror/Thriller,Movie,92,1981,76.0
 Halloween III Season of the Witch,Halloween III Season of the Witch.png,Horror/Science Fiction,Movie,99,1982,-1.0
-Halloween 4 The Return of Michael Myers,Halloween 4 The Return of Michael Myers.png,Horror/Slasher,Movie,92,1988,-1.0
+Halloween 4 The Return of Michael Myers,Halloween 4 The Return of Michael Myers.png,Horror/Slasher,Movie,92,1988,99.0
 Halloween 5 The Revenge of Michael Myers,Halloween 5 The Revenge of Michael Myers.png,Horror/Slasher,Movie,97,1989,-1.0
 Halloween The Curse of Michael Myers,Halloween The Curse of Michael Myers.png,Horror/Slasher,Movie,96,1995,-1.0
 Halloween H20 20 Years Later,Halloween H20 20 Years Later.png,Horror/Thriller,Movie,86,1998,55.0

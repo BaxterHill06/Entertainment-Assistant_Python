@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 14
-last updated: 30/08/23
+Version 15
+last updated: 19/09/23
 '''
 
 
@@ -22,6 +22,7 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import matplotlib as plt
+import os 
 
 
 def GetImages():
@@ -312,8 +313,14 @@ def CreateAccount(username, password, icon):
     addArray = pd.DataFrame({"Username":username,"Password":password.get(),"Icon":icon.get(),"File":username + ".csv"},index=[username])
     userFile = pd.concat([userFile,addArray])
     userFile.to_csv("UserFile.csv",index=False)
+    # create user folder
+    folder = './' + 'User Files/' + username
+    os.mkdir(folder)
+    
     # create a deicated file for the user to save their preferences into
-    userSpecificFile = open("User Files/" + username + ".csv", "w")
+    userSpecificFile = open("User Files/" + username + "/" + username + ".csv", "w")
+    userSpecificFile.write("Title,Genre,Type,Length,Year,Rating")
+    userSpecificFile = open("User Files/" + username + "/" + username + "WatchLater.csv", "w")
     userSpecificFile.write("Title,Genre,Type,Length,Year,Rating")
     userSpecificFile.close()
     
@@ -464,7 +471,7 @@ def HomeCreate(recLoc, highLoc):
 
     # create the data frame with the movie data in it
     dfMovies = pd.read_csv("files/Libary.csv")
-    dfUser = pd.read_csv("User Files/" + accountUsernameG + ".csv")
+    dfUser = pd.read_csv("User Files/" + accountUsernameG + "/" + accountUsernameG + ".csv")
 
     # create frames
     frmHome = Frame(window, height=mainHeight, width=mainWidth)
@@ -596,7 +603,7 @@ def GetAverageRating():
         count = 0
         for name in users:
             print("\n\n\n", users)
-            dfAccount = pd.read_csv("User files/" + name + ".csv")
+            dfAccount = pd.read_csv("User files/" + name + "/" + name + ".csv")
             for indexAcc, rowAcc in dfAccount.iterrows(): # loop through each row of the data
                 title = rowAcc["Title"]
                 rating = rowAcc["Rating"]
@@ -724,7 +731,7 @@ def SearchCreate():
 
 
 def ClearSearchTop():
-    global entSRTLength, dropSRTType, entSRTYear, menuSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop, mainHeight
+    global entSRTLength, varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes, dropSRTType, entSRTYear, menuSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop, mainHeight
     # clear the entries
     entSRTLength.delete(0,END)
     entSRTYear.delete(0,END)
@@ -738,6 +745,7 @@ def ClearSearchTop():
     dropSRTType.config(compound='right', image=imgSRTDownArrow, width=baseSize * 5)
     dropSRTType.place(relx=0.35, rely=0.95, anchor="s")
 
+    menuSRTGenre.place_forget()
     menuSRTGenre = Menubutton(frmSearchTop,text="Select Genre", relief=RAISED, width=int(30/multiplier))
     ChangeSize(menuSRTGenre, 'Helvetica bold', int(baseSize / 1.3))
     menuSRTGenre.place(relx=0.58, rely=0.9, anchor="s")
@@ -752,14 +760,19 @@ def ClearSearchTop():
 
 
 def SearchLibary():
-    global window, frmMovieBox, scrSearch, dfMovies, imgSmurf, frmSearch, entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, frmSearch, lblMBTitle, movImage, lblMBCover
+    global window, varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes, frmMovieBox, scrSearch, dfMovies, imgSmurf, frmSearch, entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, frmSearch, lblMBTitle, movImage, lblMBCover
     # get the input from the entry boxes
     
     movLength = entSRTLength.get()
     movType = selSRTType.get()
     movYear = entSRTYear.get()
+
     movGenre = GetGenre()
+    
+    print(movGenre)
     movTitle = entSRTTitle.get()
+
+    
 
     # clear other searches
     try:
@@ -798,9 +811,11 @@ def SearchLibary():
         SearchLoad()
     
 def GetGenre():
-    global varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes
+    global menuSRTGenre, varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes
     genre = ""
+
     for loc in range(len(varList)):
+        print(varList[loc].get())
         if varList[loc].get() == True:
             genre += genreList[loc] + "/"
 
@@ -816,7 +831,7 @@ def FillScreenMovies(selMovie, frm):
     frmMovieBox.pack()
     RefreshImageFile()
     GlobalImageFile(selMovie)
-    if 'Shrek' == selMovie:
+    """if 'Shrek' == selMovie:
         mov = imgShrek
     elif 'Rise Of The Guardians' == selMovie:
         mov = imgRiseOfTheGuardians
@@ -873,9 +888,9 @@ def FillScreenMovies(selMovie, frm):
     elif 'The Amazing Spider-Man' == selMovie:
         mov = imgTheAmazingSpiderMan
     elif 'The Amazing Spider-Man 2' == selMovie:
-        mov = imgTheAmazingSpiderMan2
+        mov = imgTheAmazingSpiderMan2"""
     
-    
+    mov = imgTheAmazingSpiderMan2
     mov = mov.subsample(multiplier*3)
     
     lblMBTitle = Label(frmMovieBox, text=selMovie)
@@ -893,7 +908,7 @@ def FillScreenMovies(selMovie, frm):
     btnMBView.place(relx=0.47, rely=0.5, anchor="center")
 
     # create button to add to watch later
-    btnMBWatch = Button(frmMovieBox, text="Watch Later", command= lambda selMovie = selMovie :ShowInfoCreate(selMovie))
+    btnMBWatch = Button(frmMovieBox, text="Watch Later", command= lambda selMovie = selMovie :AddWatchLater(selMovie))
     ChangeSize(btnMBWatch, 'Helvetica bold', int(baseSize*2.8))
     btnMBWatch.place(relx=0.8, rely=0.5, anchor="center")
 
@@ -940,15 +955,18 @@ def MatchCreate():
     frmMatch = Frame(window, width=mainWidth, height=mainHeight)
     frmMatchTop = Frame(window, width=topWidth, height=topHeight, highlightbackground="black", highlightthickness=1)
 
-    MatchMovies()
+    MatchMovies(1)
 
     imgMATRefresh = imgRefresh.subsample(multiplier)
 
-    btnMATRefresh = Button(frmMatchTop, image=imgMATRefresh, command= lambda:MatchMovies() + MatchLoad())
+    btnMATRefresh = Button(frmMatchTop, image=imgMATRefresh, command=RefreshMatch)
     btnMATRefresh.place(relx=0.75, rely=0.5, anchor="center")
 
 
-
+def RefreshMatch():
+    MatchMovies(1)
+    MatchLoad()
+    
 def ScrollBar(frm):
     global mainWidth, mainHeight
     # create a canvas for scroll bar
@@ -975,6 +993,12 @@ def ScrollBar(frm):
 
 def WatchLaterCreate():
     print("hi")
+
+
+def AddWatchLater(selMovie):
+    global accountUsernameG
+    dfWatchLater = pd.read_csv("User Files/" + accountUsernameG + "/" + accountUsernameG + "WatchLater")
+    
 
 def AddShowCreate():
     global varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes,window, varList, genreList, frmAddShowTop, frmAddShow, multiplier, baseSize, entASRating, selASType, entASTitle, entASGenre, dropASType, entASLength, entASYear, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
@@ -1145,7 +1169,7 @@ def AddShow():
 
     # resize the image to the base size
     imgCover = Image.open(filePath)
-    imgCoverResize = imgCover.resize((800,1200))
+    imgCoverResize = imgCover.resize((750,1125))
     imgCoverResize.save(fileName)
 
 
@@ -1157,7 +1181,7 @@ def AddShow():
     libaryFile = pd.concat([libaryDataFrame, addDataFrame])
     libaryFile.to_csv("Files/Libary.CSV",index=False)
 
-    userFile = open("User Files/" + accountUsernameG + ".csv", "a")
+    userFile = open("User Files/" + accountUsernameG + "/" + accountUsernameG + ".csv", "a")
     userFile.write("\n" + entASTitle.get() + "," + genre + "," + selASType.get() + "," + entASLength.get() + "," + entASYear.get() + "," + entASRating.get()) 
     # return to the home screen
     
@@ -1171,7 +1195,6 @@ def SearchLoad():
     # clear previous screens
     ClearScreens()
 
-    DropDownGenre()
     # load new screen
     frmSearchTop.grid(column=1,row=0,sticky="N")
     frmSearch.grid(column=1,row=1,sticky="NW")
@@ -1190,7 +1213,7 @@ def MatchLoad():
     frmMatchTop.grid(column=1,row=0,sticky="N")
 
 
-def MatchMovies():
+def MatchMovies(x):
     global frmMatch, frmMatchTop, dfMovies, dfUser, window, frmMatch, frmMatchTop, frmLoadingScreen, frmMatchScroll, mainHeight, mainWidth
 
     try:
@@ -1228,10 +1251,17 @@ def MatchMovies():
 
     arPrediction = NeuralNetwork(dfUser, dfMovieTest)
 
-    frmMatchScroll = ScrollBar(frmMatch)
+    try:
+        print("RUNING")
+        frmMatchScroll = ScrollBar(frmMatch)
         
-    for item in arPrediction:
-        FillScreenMovies(item[1], frmMatchScroll)
+        for item in arPrediction:
+            FillScreenMovies(item[1], frmMatchScroll)
+        print("FINISHED")
+    except:
+        lblMAError = Label(frmMatch, text="PLEASE RATE MORE MOVIES FOR THIS FEATURE")
+        ChangeSize(lblMAError, 'Helvetica bold', int(baseSize*1.5))
+        lblMAError.place(relx=0.5, rely=0.5, anchor="center")
 
 
 def WatchLaterLoad():
@@ -1242,8 +1272,6 @@ def AddShowLoad():
     global frmAddShow, frmAddShowTop
     # clear previous screens
     ClearScreens()
-
-    DropDownGenre()
 
     # load new screens
     frmAddShowTop.grid(column=1,row=0,sticky="NE")
@@ -1265,7 +1293,7 @@ def ShowInfoCreate(selMovie):
     showYear = str(row.iloc[0,5])
 
     # collect df from users account
-    dfUser = pd.read_csv("User Files/" + accountUsernameG + ".csv")
+    dfUser = pd.read_csv("User Files/" + accountUsernameG + "/" + accountUsernameG + ".csv")
     
     
     
@@ -1279,14 +1307,14 @@ def ShowInfoCreate(selMovie):
 
     # add elements on the main part of the screen
     lblSITitle = Label(frmShowInfo, text=showTitle)
-    ChangeSize(lblSITitle, 'Helvetica bold', int(baseSize*3))
+    ChangeSize(lblSITitle, 'Helvetica bold', int(baseSize*2.5))
     lblSITitle.place(relx=0.5, rely=0.1, anchor="center")
     
         # save image and resize
-    imgSICover = (PhotoImage(file="Movie Covers/" + showFile )).subsample(int(multiplier/1.5))
+    imgSICover = (PhotoImage(file="Movie Covers/" + showFile )).subsample(int(multiplier-1))
     
     lblSICover = Label(frmShowInfo, image=imgSICover)
-    lblSICover.place(relx=0.001, rely=0.5, anchor="w")
+    lblSICover.place(relx=0.025, rely=0.975, anchor="sw")
 
     # add info about movie
     lblSIYear = Label(frmShowInfo, text="   YEAR   \n\n" + showYear, borderwidth = 2, relief="solid", width=int(mainWidth/130))
@@ -1307,7 +1335,7 @@ def ShowInfoCreate(selMovie):
 
     lblSIRate = Label(frmShowInfo, text="ADD RATING")
     ChangeSize(lblSIRate,  'Helvetica bold', baseSize)
-    lblSIRate.place(relx=0.9, rely=0.15, anchor="center")
+    lblSIRate.place(relx=0.9, rely=0.18, anchor="center")
 
     rated = False
     for index, row in dfUser.iterrows(): # loop through each row of the data 
@@ -1317,16 +1345,16 @@ def ShowInfoCreate(selMovie):
     if rated == True:
         lblSIRating = Label(frmShowInfo, text=row["Rating"])
         ChangeSize(lblSIRating,  'Helvetica bold', baseSize)
-        lblSIRating.place(relx=0.9, rely=0.2, anchor="center")
+        lblSIRating.place(relx=0.9, rely=0.23, anchor="center")
         print("True")
     elif rated == False:
         entSIRating = Entry(frmShowInfo, width=int(mainWidth/150))
         ChangeSize(entSIRating,  'Helvetica bold', baseSize)
-        entSIRating.place(relx=0.9, rely=0.2, anchor="center")
+        entSIRating.place(relx=0.9, rely=0.23, anchor="center")
 
         btnSISubmit = Button(frmShowInfo, text="SUBMIT", command=lambda selMovie=selMovie: RefreshShowInfo(selMovie))
         ChangeSize(btnSISubmit,  'Helvetica bold', baseSize)
-        btnSISubmit.place(relx=0.9, rely=0.28, anchor="center")
+        btnSISubmit.place(relx=0.9, rely=0.31, anchor="center")
 
         
         print("False")
@@ -1341,7 +1369,7 @@ def RefreshShowInfo(selMovie):
     global entSIRating, accountUsernameG, dfUser, dfMovies
     rating = entSIRating.get()
 
-    file = open("User Files/" + accountUsernameG + ".csv", "a")
+    file = open("User Files/" + accountUsernameG + "/" + accountUsernameG + ".csv", "a")
     for index, row in dfMovies.iterrows(): # loop through each row of the data
         if row["Title"] == selMovie:
             file.write("\n" + row["Title"] + "," + row["Genre"] + "," + row["Type"] + "," + str(row["Length"]) + "," + str(row["Year"]) + "," + str(rating))
