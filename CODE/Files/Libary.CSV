@@ -1,16 +1,16 @@
 Title,File,Genre,Type,Length,Year,Rating
 Patton Oswalt Annihilation,Patton Oswalt Annihilation.png,Uncategorized,Movie,66,2017,-1.0
-New York Doll,New York Doll.png,Documentary/Music,Movie,75,2005,-1.0
-Mickeys Magical Christmas Snowed in at the House of Mouse,Mickeys Magical Christmas Snowed in at the House of Mouse.png,Adventure/Animation/Comedy/Family/Fantasy,Movie,65,2001,-1.0
-Mickeys House of Villains,Mickeys House of Villains.png,Animation/Comedy/Family/Fantasy/Horror,Movie,68,2001,-1.0
+New York Doll,New York Doll.png,Documentary/Music,Movie,75,2005,99.0
+Mickeys Magical Christmas Snowed in at the House of Mouse,Mickeys Magical Christmas Snowed in at the House of Mouse.png,Adventure/Animation/Comedy/Family/Fantasy,Movie,65,2001,89.0
+Mickeys House of Villains,Mickeys House of Villains.png,Animation/Comedy/Family/Fantasy/Horror,Movie,68,2001,76.0
 And Then I Go,And Then I Go.png,Drama,Movie,99,2017,-1.0
-An Extremely Goofy Movie,An Extremely Goofy Movie.png,Animation/Comedy/Family/Sport,Movie,79,2000,-1.0
-Peter Rabbit,Peter Rabbit.png,Adventure/Animation/Comedy/Family/Fantasy,Movie,95,2018,-1.0
+An Extremely Goofy Movie,An Extremely Goofy Movie.png,Animation/Comedy/Family/Sport,Movie,79,2000,53.0
+Peter Rabbit,Peter Rabbit.png,Adventure/Animation/Comedy/Family/Fantasy,Movie,95,2018,76.0
 Love Songs,Love Songs.png,Uncategorized,Movie,91,2007,-1.0
-89,89.png,Uncategorized,Movie,91,2017,-1.0
+89,89.png,Uncategorized,Movie,91,2017,87.0
 The Foster Boy,The Foster Boy.png,Drama,Movie,107,2011,-1.0
-Forever My Girl,Forever My Girl.png,Drama/Music/Romance,Movie,108,2018,-1.0
-Tom Segura Disgraceful,Tom Segura Disgraceful.png,Comedy/Documentary,Movie,71,2018,-1.0
+Forever My Girl,Forever My Girl.png,Drama/Music/Romance,Movie,108,2018,23.0
+Tom Segura Disgraceful,Tom Segura Disgraceful.png,Comedy/Documentary,Movie,71,2018,65.0
 The Secret Rules of Modern Living Algorithms,The Secret Rules of Modern Living Algorithms.png,Documentary,Movie,58,2015,-1.0
 Secrets in the Fall,Secrets in the Fall.png,Family,Movie,90,2015,-1.0
 Silent Night,Silent Night.png,Comedy/Drama,Movie,100,2017,-1.0
@@ -770,7 +770,7 @@ Lego Scooby-Doo Haunted Hollywood,Lego Scooby-Doo Haunted Hollywood.png,Action/A
 Assassination Games,Assassination Games.png,Action/Crime/Drama/Thriller,Movie,101,2011,-1.0
 Dirty Pretty Things,Dirty Pretty Things.png,Action/Crime/Drama/Thriller,Movie,97,2002,-1.0
 Hero,Hero.png,Action/Adventure/History,Movie,107,2002,-1.0
-Deadpool,Deadpool.png,Action/Adventure/Comedy/Romance/Sci-Fi,Movie,108,2016,92.0
+Deadpool,Deadpool.png,Action/Adventure/Comedy/Romance/Sci-Fi,Movie,108,2016,-1.0
 The Boy,The Boy.png,Action/Horror/Mystery/Thriller,Movie,97,2016,-1.0
 WWE TLC Tables Ladders & Chairs,WWE TLC Tables Ladders & Chairs.png,Action,Movie,171,2015,-1.0
 Where to Invade Next,Where to Invade Next.png,Action/Comedy/Documentary,Movie,120,2015,-1.0
@@ -973,7 +973,7 @@ Mr Calzaghe,Mr Calzaghe.png,Action/Biography/Documentary/Sport,Movie,90,2015,-1.
 Bone Tomahawk,Bone Tomahawk.png,Action/Adventure/Drama/Horror/Thriller,Movie,132,2015,-1.0
 War Room,War Room.png,Action/Drama,Movie,120,2015,-1.0
 Mistress America,Mistress America.png,Action/Comedy/Drama,Movie,84,2015,-1.0
-Good Luck Charlie Its Christmas,Good Luck Charlie Its Christmas.png,Action/Comedy/Drama/Family,Movie,90,2011,34.0
+Good Luck Charlie Its Christmas,Good Luck Charlie Its Christmas.png,Action/Comedy/Drama/Family,Movie,90,2011,-1.0
 Free to Play,Free to Play.png,Action/Documentary,Movie,75,2014,-1.0
 Lost in the Sun,Lost in the Sun.png,Action/Drama/Thriller,Movie,95,2016,-1.0
 Jaco,Jaco.png,Action/Biography/Documentary/Drama/Music,Movie,110,2015,-1.0
@@ -1453,7 +1453,7 @@ The Final Member,The Final Member.png,Action/Comedy/Documentary/Drama,Movie,75,2
 The Fighter,The Fighter.png,Action/Biography/Drama/History/Sport,Movie,116,2010,-1.0
 The Fifth Estate,The Fifth Estate.png,Action/Biography/Drama/History/Thriller,Movie,128,2013,-1.0
 The Fault in Our Stars,The Fault in Our Stars.png,Action/Drama/Romance,Movie,126,2014,-1.0
-The Fast and the Furious Tokyo Drift,The Fast and the Furious Tokyo Drift.png,Action/Crime/Drama/Romance/Thriller,Movie,104,2006,80.0
+The Fast and the Furious Tokyo Drift,The Fast and the Furious Tokyo Drift.png,Action/Crime/Drama/Romance/Thriller,Movie,104,2006,-1.0
 The Fast and the Furious,The Fast and the Furious.png,Action/Crime/Thriller,Movie,106,2001,-1.0
 The Family Man,The Family Man.png,Comedy/Drama/Fantasy/Romance,Movie,125,2000,-1.0
 The Family,The Family.png,Action/Comedy/Crime/Thriller,Movie,111,2013,-1.0
@@ -1670,7 +1670,7 @@ Signs,Signs.png,Action/Drama/Mystery/Sci-Fi/Thriller,Movie,106,2002,-1.0
 Sideways,Sideways.png,Action/Adventure/Comedy/Drama/Romance,Movie,126,2004,-1.0
 Side Effects,Side Effects.png,Action/Crime/Drama/Mystery/Thriller,Movie,106,2013,-1.0
 Shutter Island,Shutter Island.png,Action/Mystery/Thriller,Movie,138,2010,-1.0
-Shrek the Third,Shrek the Third.png,Adventure/Animation/Comedy/Family/Fantasy,Movie,93,2007,10.0
+Shrek the Third,Shrek the Third.png,Adventure/Animation/Comedy/Family/Fantasy,Movie,93,2007,-1.0
 Shrek the Musical,Shrek the Musical.png,Action/Comedy/Family/Fantasy/Musical,Movie,130,2013,-1.0
 Shrek Forever After,Shrek Forever After.png,Action/Adventure/Animation/Comedy/Family,Movie,93,2010,-1.0
 Shrek,Shrek.png,Action/Adventure/Animation/Comedy/Family,Movie,90,2001,-1.0
@@ -1708,7 +1708,7 @@ Scooby-Doo WrestleMania Mystery,Scooby-Doo WrestleMania Mystery.png,Action/Anima
 School of Rock,School of Rock.png,Action/Comedy/Family/Music,Movie,108,2003,-1.0
 Scenic Route,Scenic Route.png,Action/Drama/Thriller,Movie,82,2013,-1.0
 Scary Movie,Scary Movie.png,Action/Comedy,Movie,88,2000,-1.0
-Saw VI,Saw VI.png,Action/Horror/Mystery/Thriller,Movie,90,2009,53.0
+Saw VI,Saw VI.png,Action/Horror/Mystery/Thriller,Movie,90,2009,-1.0
 Saw III,Saw III.png,Action/Horror/Mystery/Thriller,Movie,108,2006,-1.0
 Saw II,Saw II.png,Action/Crime/Horror/Mystery,Movie,93,2005,-1.0
 Saw,Saw.png,Action/Crime/Drama/Horror/Mystery,Movie,103,2004,-1.0
@@ -1989,7 +1989,7 @@ Mandela Long Walk to Freedom,Mandela Long Walk to Freedom.png,Action/Biography/D
 Man on Fire,Man on Fire.png,Action/Crime/Drama/Thriller,Movie,146,2004,-1.0
 Man on a Ledge,Man on a Ledge.png,Action/Adventure/Crime/Thriller,Movie,102,2012,-1.0
 Man of Steel,Man of Steel.png,Action/Adventure/Fantasy/Sci-Fi,Movie,143,2013,-1.0
-Mamma Mia,Mamma Mia.png,Action/Comedy/Family/Musical/Romance,Movie,108,2008,100.0
+Mamma Mia,Mamma Mia.png,Action/Comedy/Family/Musical/Romance,Movie,108,2008,-1.0
 Mama,Mama.png,Action/Fantasy/Horror/Thriller,Movie,100,2013,-1.0
 Maleficent,Maleficent.png,Action/Adventure/Family/Fantasy/Romance,Movie,97,2014,-1.0
 Magic Mike,Magic Mike.png,Action/Comedy/Drama,Movie,110,2012,-1.0
@@ -1997,7 +1997,7 @@ Magic in the Moonlight,Magic in the Moonlight.png,Action/Comedy/Romance,Movie,97
 Madagascar Escape 2 Africa,Madagascar Escape 2 Africa.png,Action/Adventure/Animation/Comedy/Family,Movie,89,2008,-1.0
 Madagascar 3 Europes Most Wanted,Madagascar 3 Europes Most Wanted.png,Action/Adventure/Animation/Comedy/Family,Movie,93,2012,-1.0
 Madagascar,Madagascar.png,Action/Adventure/Animation/Comedy/Family,Movie,86,2005,-1.0
-Mad Max Fury Road,Mad Max Fury Road.png,Action/Adventure/Sci-Fi/Thriller,Movie,120,2015,86.0
+Mad Max Fury Road,Mad Max Fury Road.png,Action/Adventure/Sci-Fi/Thriller,Movie,120,2015,-1.0
 Machine Gun Preacher,Machine Gun Preacher.png,Action/Biography/Crime/Drama,Movie,129,2011,-1.0
 Machete,Machete.png,Action/Crime/Thriller,Movie,105,2010,-1.0
 Lucy,Lucy.png,Action/Sci-Fi/Thriller,Movie,89,2014,-1.0
@@ -2041,7 +2041,7 @@ Let Me In,Let Me In.png,Action/Drama/Fantasy/Horror/Mystery,Movie,116,2010,-1.0
 Les Misérables,Les Misérables.png,Action/Drama/History/Musical/Romance,Movie,158,2012,-1.0
 A Series of Unfortunate Events,A Series of Unfortunate Events.png,Action/Adventure/Comedy/Family/Fantasy,Movie,108,2004,-1.0
 Legend of the Guardians The Owls of GaHoole,Legend of the Guardians The Owls of GaHoole.png,Action/Adventure/Animation/Family/Fantasy,Movie,97,2010,-1.0
-Legally Blonde,Legally Blonde.png,Action/Comedy/Romance,Movie,96,2001,30.0
+Legally Blonde,Legally Blonde.png,Action/Comedy/Romance,Movie,96,2001,-1.0
 Lee Daniels The Butler,Lee Daniels The Butler.png,Action/Biography/Drama,Movie,132,2013,-1.0
 Leave the World Behind,Leave the World Behind.png,Action/Documentary/Music,Movie,95,2014,-1.0
 Leap Year,Leap Year.png,Action/Comedy/Romance,Movie,100,2010,-1.0
@@ -2134,7 +2134,7 @@ Into the Woods,Into the Woods.png,Action/Adventure/Comedy/Drama/Fantasy,Movie,12
 Into the Wild,Into the Wild.png,Action/Adventure/Biography/Drama/Romance,Movie,148,2007,-1.0
 Into the Mind,Into the Mind.png,Action/Documentary/Sport,Movie,82,2013,-1.0
 Interview with a Hitman,Interview with a Hitman.png,Action/Thriller,Movie,96,2012,-1.0
-Interstellar,Interstellar.png,Action/Adventure/Drama/Sci-Fi,Movie,169,2014,86.0
+Interstellar,Interstellar.png,Action/Adventure/Drama/Sci-Fi,Movie,169,2014,-1.0
 Insurgent,Insurgent.png,Action/Adventure/Sci-Fi/Thriller,Movie,119,2015,-1.0
 Insomnia,Insomnia.png,Action/Drama/Mystery/Thriller,Movie,118,2002,-1.0
 Insidious Chapter 2,Insidious Chapter 2.png,Action/Fantasy/Horror/Mystery/Thriller,Movie,106,2013,-1.0
@@ -2342,7 +2342,7 @@ Five Minutes of Heaven,Five Minutes of Heaven.png,Action/Drama/Thriller,Movie,89
 Fired Up,Fired Up.png,Action/Comedy,Movie,90,2009,-1.0
 Finding Vivian Maier,Finding Vivian Maier.png,Action/Biography/Documentary/Mystery,Movie,83,2013,-1.0
 Finding Neverland,Finding Neverland.png,Action/Biography/Drama/Family,Movie,106,2004,-1.0
-Finding Nemo,Finding Nemo.png,Action/Adventure/Animation/Comedy/Family,Movie,100,2003,98.0
+Finding Nemo,Finding Nemo.png,Action/Adventure/Animation/Comedy/Family,Movie,100,2003,-1.0
 Final Fantasy VII Advent Children,Final Fantasy VII Advent Children.png,Action/Adventure/Animation/Fantasy/Sci-Fi,Movie,101,2005,-1.0
 Final Fantasy The Spirits Within,Final Fantasy The Spirits Within.png,Action/Adventure/Animation/Fantasy/Romance,Movie,106,2001,-1.0
 Final Destination,Final Destination.png,Action/Fantasy/Horror/Thriller,Movie,98,2000,-1.0
@@ -3923,12 +3923,12 @@ City of Joy,City of Joy.png,Crime/Documentary/Drama/Thriller/War,Movie,74,2016,-
 The Most Assassinated Woman in the World,The Most Assassinated Woman in the World.png,Biography/Drama/Mystery/Thriller,Movie,102,2018,-1.0
 Mara,Mara.png,Crime/Horror/Thriller,Movie,98,2018,-1.0
 Hurricane,Hurricane.png,Drama/War,Movie,107,2018,-1.0
-Destination Wedding,Destination Wedding.png,Comedy/Drama/Romance,Movie,90,2018,-1.0
+Destination Wedding,Destination Wedding.png,Comedy/Drama/Romance,Movie,90,2018,44.0
 Devils Gate,Devils Gate.png,Horror/Sci-Fi/Thriller,Movie,94,2017,-1.0
 Two Is a Family,Two Is a Family.png,Comedy/Drama,Movie,118,2016,-1.0
 The 60 Yard Line,The 60 Yard Line.png,Comedy/Drama/Family/Romance/Sport,Movie,90,2017,-1.0
 Half Nelson,Half Nelson.png,Drama,Movie,106,2006,-1.0
-Summer Holiday,Summer Holiday.png,Comedy/Romance,Movie,98,2000,-1.0
+Summer Holiday,Summer Holiday.png,Comedy/Romance,Movie,98,2000,55.0
 The Child in Time,The Child in Time.png,Drama,Movie,82,2017,-1.0
 Mr Magoriums Wonder Emporium,Mr Magoriums Wonder Emporium.png,Comedy/Family/Fantasy,Movie,93,2007,-1.0
 High Fantasy,High Fantasy.png,Comedy/Drama,Movie,71,2017,-1.0
@@ -3938,5 +3938,3 @@ Skyscraper,Skyscraper.png,Action/Thriller,Movie,102,2018,-1.0
 Trench 11,Trench 11.png,Horror/Thriller/War,Movie,90,2017,-1.0
 My Daddys in Heaven,My Daddys in Heaven.png,Comedy/Drama/Family,Movie,92,2017,-1.0
 Keeping Up with the Steins,Keeping Up with the Steins.png,Comedy,Movie,90,2006,-1.0
-UFO,UFO.png,Action/Sci-Fi/Thriller,Movie,88,2018,-1.0
-UFO,Movie Covers/UFO.png,Comedy,Movie,78,1998,
