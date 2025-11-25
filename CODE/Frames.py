@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 10
-last updated: 12/07/23
+Version 11
+last updated: 15/07/23
 '''
 
 
@@ -110,11 +110,8 @@ def LoginCreate(win,spa,screenPage):
     multiplier, baseSize, height, width = ItemSize()
 
 
-
-
-    print("height:", height, "width:", width)
     #create Frame
-    frmLogin = Frame(window, bg="white", width=width, height=height-20, highlightbackground="blue", highlightthickness=4)
+    frmLogin = Frame(window, bg="white", width=width, height=height-20)
 
 
     # create heading
@@ -473,11 +470,18 @@ def HomeLoad():
 
 
 def SearchCreate():
-    global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier, topWidth, mainWidth, topHeight, mainHeight
+    global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier, topWidth, mainWidth, topHeight, mainHeight, imgMagGlass, imgDownARRow, imgSRTDownArrow, imgSRTSearch, entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types
     # create frames
     frmSearchTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
     frmSearch = Frame(window, width=mainWidth, height=mainHeight)
 
+    types = GetTypes()
+    selSRTType = StringVar()
+
+
+    # resize images to screen
+    imgSRTSearch = imgMagGlass.subsample(multiplier*3)
+    imgSRTDownArrow = imgDownArrow.subsample(multiplier*3)
 
     # create elements on screen
     lblSRTHeading = Label(frmSearchTop, text="SEARCH")
@@ -487,7 +491,7 @@ def SearchCreate():
 
     lblSRTLength = Label(frmSearchTop, text="Length")
     ChangeSize(lblSRTLength,  'Helvetica bold', int(baseSize/1.3))
-    lblSRTLength.place(relx=0.2, rely=0.01, anchor="n")
+    lblSRTLength.place(relx=0.25, rely=0.01, anchor="n")
 
     lblSRTType = Label(frmSearchTop, text="Type")
     ChangeSize(lblSRTType,  'Helvetica bold', int(baseSize/1.3))
@@ -495,19 +499,79 @@ def SearchCreate():
 
     lblSRTYear = Label(frmSearchTop, text="Year")
     ChangeSize(lblSRTYear,  'Helvetica bold', int(baseSize/1.3))
-    lblSRTYear.place(relx=0.5, rely=0.01, anchor="n")
+    lblSRTYear.place(relx=0.45, rely=0.01, anchor="n")
 
     lblSRTGenre = Label(frmSearchTop, text="Genre")
     ChangeSize(lblSRTGenre,  'Helvetica bold', int(baseSize/1.3))
-    lblSRTGenre.place(relx=0.65, rely=0.01, anchor="n")
+    lblSRTGenre.place(relx=0.58, rely=0.01, anchor="n")
 
     lblSRTTitle = Label(frmSearchTop, text="Title")
     ChangeSize(lblSRTTitle,  'Helvetica bold', int(baseSize/1.3))
-    lblSRTTitle.place(relx=0.8, rely=0.01, anchor="n")
+    lblSRTTitle.place(relx=0.76, rely=0.01, anchor="n")
+
+    # create entry boxes
+    entSRTLength = Entry(frmSearchTop, width=int(16/multiplier))
+    ChangeSize(entSRTLength, 'Helvetica bold', int(baseSize / 1.3))
+    entSRTLength.place(relx=0.25, rely=0.9, anchor="s")
+
+    dropSRTType = OptionMenu(frmSearchTop,selSRTType, *types)
+    ChangeSize(dropSRTType, 'Helvetica bold', int(baseSize / 1.6))
+    dropSRTType.config(compound='right', image=imgSRTDownArrow, width=baseSize * 5)
+    dropSRTType.place(relx=0.35, rely=0.95, anchor="s")
+
+    entSRTYear = Entry(frmSearchTop, width=int(16/multiplier))
+    ChangeSize(entSRTYear, 'Helvetica bold', int(baseSize / 1.3))
+    entSRTYear.place(relx=0.45, rely=0.9, anchor="s")
+
+    entSRTGenre = Entry(frmSearchTop, width=int(30/multiplier))
+    ChangeSize(entSRTGenre, 'Helvetica bold', int(baseSize / 1.3))
+    entSRTGenre.place(relx=0.58, rely=0.9, anchor="s")
+
+    entSRTTitle = Entry(frmSearchTop, width=int(37/multiplier))
+    ChangeSize(entSRTTitle, 'Helvetica bold', int(baseSize / 1.3))
+    entSRTTitle.place(relx=0.76, rely=0.9, anchor="s")
+
+
+
+    btnSRTSearch = Button(frmSearchTop, text="SEARCH", command=SearchLibary)
+    ChangeSize(btnSRTSearch, 'Helvetica bold', int(baseSize / 2))
+    btnSRTSearch.place(relx=0.89, rely=0.9, anchor="s")
+
+    btnSRTClear = Button(frmSearchTop, text="X", bg="red", command=ClearSearchTop)
+    ChangeSize(btnSRTClear, 'Helvetica bold', int(baseSize / 2))
+    btnSRTClear.place(relx=0.94 , rely=0.9 , anchor="s")
 
 
 
 
+    lblSRTLogo = Label(frmSearchTop, image=imgSRTSearch)
+    lblSRTLogo.place(relx=0.99,rely=0.5, anchor="e")
+
+
+
+def ClearSearchTop():
+    global entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop
+    # clear the entries
+    entSRTLength.delete(0,END)
+    entSRTYear.delete(0,END)
+    entSRTGenre.delete(0,END)
+    entSRTTitle.delete(0,END)
+
+    dropSRTType.place_forget()
+    selSRTType = StringVar()
+    dropSRTType = OptionMenu(frmSearchTop, selSRTType, *types)
+    ChangeSize(dropSRTType, 'Helvetica bold', int(baseSize / 1.6))
+    dropSRTType.config(compound='right', image=imgSRTDownArrow, width=baseSize * 5)
+    dropSRTType.place(relx=0.35, rely=0.95, anchor="s")
+
+
+def SearchLibary():
+    global entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType
+    Length = entSRTLength.get()
+    Type = selSRTType.get()
+    Year = entSRTYear.get()
+    Genre = entSRTGenre
+    Title = entSRTTitle
 
 
 
@@ -592,7 +656,7 @@ def AddShowCreate():
     dropASType = OptionMenu(frmAddShow, selASType, *types)
     ChangeSize(dropASType, 'Helvetica bold', int(baseSize*1.5))
     dropASType.place(relx=0.45, rely=0.36, anchor="center")
-    dropASType.config(compound='right', image=imgASDownArrow, width=baseSize*11) #width=int(baseSize/3)) #, image=imgASArrowDown)
+    dropASType.config(compound='right', image=imgASDownArrow, width=baseSize*11)
     dropASType.image=imgASDownArrow
 
     entASGenre = Entry(frmAddShow,width=int(baseSize/2))
@@ -630,7 +694,6 @@ def AddShowConfigure():
 
     # resize the image to the base size
     imgCover = Image.open(filePath)
-    print(imgCover.height)
     imgCoverResize = imgCover.resize((800,1200))
     imgCoverResize.save("Movie Covers/" + fileName)
 
