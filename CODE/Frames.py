@@ -3,18 +3,23 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 8
-last updated: 27/06/23
+Version 9
+last updated: 04/07/23
 '''
 
+
+# note/ remimndering
+#try manualy entering the width or height of the label or maybe the frame to see if we can bypass the "   " and \n
 
 from tkinter import *
 from Images import *
 from functions import *
 import pandas as pd
+import PIL
+from PIL import Image
 
 def GetImages():
-    global imgPlus,imgEmpLogo,imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass, imgMenuPlus,imgRightArrow, imgLeftArrow
+    global imgPlus,imgEmpLogo,imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass, imgMenuPlus,imgRightArrow, imgLeftArrow, imgEmptyCover, imgDownArrow, imgUpArrow
     imgPlus = PhotoImage(file="plus.png")
     imgEmpLogo = PhotoImage(file="empty_logo.png")
 
@@ -43,6 +48,10 @@ def GetImages():
 
     imgRightArrow = PhotoImage(file="arrow Right.png")
     imgLeftArrow = PhotoImage(file="arrow Left.png")
+    imgDownArrow = PhotoImage(file="arrow Down.png")
+    imgUpArrow = PhotoImage(file="arrow Up.png")
+
+    imgEmptyCover = PhotoImage(file="Movie Covers/Empty Cover.png")
 
 
 #create Exit bar
@@ -87,7 +96,7 @@ def ClearScreens():
 
 
 def LoginCreate(win,spa,screenPage):
-    global frmLogin,imgPlus,window,space, multiplier, baseSize, imgLGPlus
+    global frmLogin,imgPlus,window,space, multiplier, baseSize, imgLGPlus, height, width
     #def window and space so they can be globaled for other functions
     window = win
     space = spa
@@ -99,17 +108,14 @@ def LoginCreate(win,spa,screenPage):
         pass
 
     # gather text and image size for screen
-    multiplier, baseSize = ItemSize()
+    multiplier, baseSize, height, width = ItemSize()
 
 
 
 
-
+    print("height:", height, "width:", width)
     #create Frame
-    frmLogin = Frame(window, bg="white")
-
-    #fill the screen
-    ScreenFill(frmLogin,space)
+    frmLogin = Frame(window, bg="white", width=width-35, height=height-20, highlightbackground="blue", highlightthickness=4)
 
 
     # create heading
@@ -227,11 +233,8 @@ def LoginLoad():
 
 
 def AddAccountCreate():
-    global frmAddAccount,imgEmpLogo, baseSize, multiplier, selAAIcon,lblAALogo, window, space, baseSize, multiplier, imgAAEmpLogo
-    frmAddAccount = Frame(window)
-    
-    #fill the screen
-    ScreenFill(frmAddAccount,space)
+    global frmAddAccount,imgEmpLogo, baseSize, multiplier, selAAIcon,lblAALogo, window, space, baseSize, multiplier, imgAAEmpLogo, height, width
+    frmAddAccount = Frame(window, width=width-20, height=height-35)
     
     #resizing the empty icon image
     imgAAEmpLogo = imgEmpLogo.subsample(multiplier)
@@ -246,7 +249,7 @@ def AddAccountCreate():
 
     #add dropdown for selection icon
     selAAIcon = StringVar()
-    dropAALogo = OptionMenu(frmAddAccount, selAAIcon , *icons)
+    dropAALogo = OptionMenu(frmAddAccount, selAAIcon , *icons,)
     dropAALogo.config(width=int(13/multiplier),height=int(2/multiplier))
     ChangeSize(dropAALogo,'Helvetica bold', baseSize)
     dropAALogo.place(relx=0.65, rely=0.15, anchor="center")
@@ -323,11 +326,8 @@ def AddAccountLoad():
 
 
 def AccountLoginCreate():
-    global window, space, baseSize, imgEmpLogo, lblALMessage, frmAccountLogin, lblALLogo,lblALUsername, btnALLogin, entALPassword
-    frmAccountLogin = Frame(window) # create the frame to place elements into
-
-    #fill the screen
-    ScreenFill(frmAccountLogin,space)
+    global window, space, baseSize, imgEmpLogo, lblALMessage, frmAccountLogin, lblALLogo,lblALUsername, btnALLogin, entALPassword, height, width
+    frmAccountLogin = Frame(window, height=height-20, width=width-35) # create the frame to place elements into
 
     # create logo label
     lblALLogo = Label(frmAccountLogin,image=imgEmpLogo)
@@ -395,8 +395,8 @@ def LoginAttempt(accountUsername,accountPassword):
 
 
 def BarCreate():
-    global window, frmBar, multiplier, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass,imgMenuPlus, imgBRBook, imgBRClock, imgBRExit, imgBRHeart, imgBRHouse, imgBRMagGlass, imgBRPlus
-    frmBar = Frame(window, highlightbackground="black", highlightthickness=1) # create side bar frame
+    global window, frmBar, multiplier, height, width, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass,imgMenuPlus, imgBRBook, imgBRClock, imgBRExit, imgBRHeart, imgBRHouse, imgBRMagGlass, imgBRPlus
+    frmBar = Frame(window, highlightbackground="black", highlightthickness=1,) # width=width-1629, height=height-20) # create side bar frame
     print(multiplier)
 
     # adjust icon size based on screen size
@@ -426,24 +426,22 @@ def BarCreate():
     btnBRAdd = Button(frmBar, image=imgBRPlus, command=AddShowLoad, highlightthickness=0, bd=0)
     btnBRAdd.pack()
     btnBRExit = Button(frmBar, image=imgBRExit, command=LoginLoad, highlightthickness=0, bd=0)
-    btnBRExit.pack(ipady=baseSize*1.2 + 10)
+    btnBRExit.pack()
 
     HomeCreate()
 
 def HomeCreate():
-    global window, frmHome, baseSize, multiplier, bottomSpace, topSpace, frmHomeTop
+    global window, frmHome, baseSize, multiplier, bottomSpace, topSpace, frmHomeTop, height, width, topWidth, mainWidth, topHeight, mainHeight
+    #  create variable with spacific size for  the top bar and main dscreent
+    topHeight = (height - 20) / 11
+    topWidth = ((width - 35) / 13) * 12
+    mainHeight = ((height - 20) / 12) * 11
+    mainWidth = ((width - 35) / 13) * 12
+
     # create frames
-    frmHome = Frame(window)
-    frmHomeTop = Frame(window, highlightbackground="black", highlightthickness=1)
+    frmHome = Frame(window, height=mainHeight, width=mainWidth)
+    frmHomeTop = Frame(window, highlightbackground="black", highlightthickness=1, height=topHeight, width=topWidth)
 
-    # create top bar for headings
-    topSpace = ScreenSpace(int((182/multiplier*7)/11),int((140/multiplier)/15*14))
-    ScreenFill(frmHomeTop, topSpace)
-
-
-    # create the space needed for the main par of screen and fill for place to work
-    bottomSpace = ScreenSpace(int((182/multiplier*7)/11),int((140/multiplier)/15))
-    ScreenFill(frmHome,bottomSpace)
 
     # create sub headings
     lblHORecent = Label(frmHome, text="Recently Added")
@@ -476,14 +474,11 @@ def HomeLoad():
 
 
 def SearchCreate():
-    global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier
+    global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier, topWidth, mainWidth, topHeight, mainHeight
     # create frames
-    frmSearchTop = Frame(window, highlightbackground="black", highlightthickness=1)
-    frmSearch = Frame(window)
+    frmSearchTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
+    frmSearch = Frame(window, width=mainWidth, height=mainHeight)
 
-    # fill Screen
-    ScreenFill(frmSearchTop, topSpace)
-    ScreenFill(frmSearch, bottomSpace)
 
     # create elements on screen
     lblSRTHeading = Label(frmSearchTop, text="SEARCH")
@@ -524,14 +519,19 @@ def WatchLaterCreate():
     print("hi")
 
 def AddShowCreate():
-    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, imgPlus, topSpace, bottomSpace, imgASTPlus
+    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
     # create the frames
-    frmAddShowTop = Frame(window, highlightbackground="black", highlightthickness=1)
-    frmAddShow = Frame(window)
+    frmAddShowTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
+    frmAddShow = Frame(window, width=mainWidth, height=mainHeight)
 
-    # fill the screens for place
-    ScreenFill(frmAddShowTop, topSpace)
-    ScreenFill(frmAddShow, bottomSpace)
+    # get the array with the types e.g. Movie or tv show
+    types = GetTypes()
+    selASType = StringVar()
+
+    # change size of image
+    imgASDownArrow = imgDownArrow.subsample(multiplier*3)
+
+
 
     #create the elements on the top bar
     lblASTHeading = Label(frmAddShowTop, text="ADD SHOW")
@@ -540,21 +540,99 @@ def AddShowCreate():
 
     # change size of image
     imgASTPlus = imgPlus.subsample(int(13 / multiplier))
+    imgASEmptyCover = imgEmptyCover.subsample(multiplier)
 
     lblASTLogo = Label(frmAddShowTop, image=imgASTPlus)
     lblASTLogo.place(relx=0.95, rely=0.06, anchor="ne")
 
     # create the elements on screen
     lblASTitle = Label(frmAddShow, text="Title")
-    ChangeSize(lblASTitle,'Helvetica bold', baseSize)
+    ChangeSize(lblASTitle,'Helvetica bold', baseSize*2)
     lblASTitle.place(relx=0.5, rely=0.01, anchor="n")
 
     entASTitle = Entry(frmAddShow)
-    ChangeSize(entASTitle,'Helvetica bold', baseSize)
+    ChangeSize(entASTitle,'Helvetica bold', baseSize*2)
     entASTitle.config(width=int(40/multiplier))
     entASTitle.place(relx=0.5, rely=0.1, anchor="n")
 
+    lblASFile = Label(frmAddShow, text="Enter File Path")
+    ChangeSize(lblASFile,'Helvetica bold', int(baseSize/1.5))
+    lblASFile.place(relx=0.01, rely=0.2, anchor="nw")
 
+    entASFile = Entry(frmAddShow)
+    ChangeSize(entASFile,'Helvetica bold', int(baseSize/1.5))
+    entASFile.place(relx=0.01, rely=0.25, anchor="nw")
+
+    btnASLoad = Button(frmAddShow, command=AddShowConfigure, text="Load", width=int(baseSize/5))
+    ChangeSize(btnASLoad,'Helvetica bold', int(baseSize/2))
+    btnASLoad.place(relx=0.2, rely=0.247, anchor="nw")
+
+    lblASCover = Label(frmAddShow, borderwidth=1, relief="solid", image=imgASEmptyCover)
+    lblASCover.place(relx=0.01, rely=0.32, anchor="nw")
+
+    lblASType = Label(frmAddShow, text="Type")
+    ChangeSize(lblASType, 'Helvetica bold', int(baseSize*1.5))
+    lblASType.place(relx=0.45, rely=0.25, anchor="center")
+
+    lblASGenre = Label(frmAddShow, text="Genre")
+    ChangeSize(lblASGenre, 'Helvetica bold', int(baseSize*1.5))
+    lblASGenre.place(relx=0.7, rely=0.25, anchor="center")
+
+    lblASLength = Label(frmAddShow, text="Length")
+    ChangeSize(lblASLength, 'Helvetica bold', int(baseSize*1.5))
+    lblASLength.place(relx=0.45, rely=0.46, anchor="center")
+
+    lblASYear = Label(frmAddShow, text="Year")
+    ChangeSize(lblASYear, 'Helvetica bold', int(baseSize*1.5))
+    lblASYear.place(relx=0.7, rely=0.46, anchor="center")
+
+    dropASType = OptionMenu(frmAddShow, selASType, *types)
+    ChangeSize(dropASType, 'Helvetica bold', int(baseSize*1.5))
+    dropASType.place(relx=0.45, rely=0.36, anchor="center")
+    dropASType.config(compound='right', image=imgASDownArrow, width=baseSize*11) #width=int(baseSize/3)) #, image=imgASArrowDown)
+    dropASType.image=imgASDownArrow
+
+    entASGenre = Entry(frmAddShow,width=int(baseSize/2))
+    ChangeSize(entASGenre, 'Helvetica bold', int(baseSize*1.2))
+    entASGenre.place(relx=0.73, rely=0.36, anchor="center")
+
+    entASLength = Entry(frmAddShow,width=int(baseSize/2))
+    ChangeSize(entASLength, 'Helvetica bold', int(baseSize*1.2))
+    entASLength.place(relx=0.45, rely=0.54, anchor="center")
+
+    entASYear = Entry(frmAddShow,width=int(baseSize/2))
+    ChangeSize(entASYear, 'Helvetica bold', int(baseSize*1.2))
+    entASYear.place(relx=0.73, rely=0.54, anchor="center")
+
+    lblASRating = Label(frmAddShow, text="Rating")
+    ChangeSize(lblASRating, 'Helvetica bold', int(baseSize*1.5))
+    lblASRating.place(relx=0.6, rely=0.61, anchor="center")
+
+    entASRating = Entry(frmAddShow,width=int(baseSize/2))
+    ChangeSize(entASRating, 'Helvetica bold', int(baseSize*1.2))
+    entASRating.place(relx=0.6, rely=0.69, anchor="center")
+
+    btnASAdd = Button(frmAddShow, text="ADD", width=baseSize, command=AddShow)
+    ChangeSize(btnASAdd, 'Helvetica bold', int(baseSize*1.2))
+    btnASAdd.place(relx=0.5, rely=0.9, anchor="center")
+
+def AddShowConfigure():
+    global entASFile, lblASCover, imgMovieCover, multiplier
+    filePath = (entASFile.get()).replace("\\", "/").strip('"')
+    fileName = (filePath.split("/"))
+    fileName = fileName[len(fileName)-1]
+    imgCover = Image.open(filePath)
+    print(imgCover.height)
+    imgCoverResize = imgCover.resize((800,1200))
+    imgCoverResize.save("Movie Covers/" + fileName)
+
+
+    imgMovieCover = PhotoImage(file="Movie Covers/" + fileName)
+    imgMovieCover = imgMovieCover.subsample(multiplier)
+    lblASCover.config(image=imgMovieCover)
+
+def AddShow():
+    pass
 
 def SearchLoad():
     global frmSearchTop, frmSearch, frmHome

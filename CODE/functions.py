@@ -3,11 +3,13 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 8
-last updated: 27/06/23
+Version 9
+last updated: 04/07/23
 '''
 
+
 from tkinter import *
+import ctypes
 
 def ScreenSpace(x, y):
     global array
@@ -32,8 +34,18 @@ def ChangeSize(item,font,size):
 
 def ItemSize():
     global array
-    multiplier = int(round(182 / array[0],0))
+    user32 = ctypes.windll.user32
+    screenSize = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
+    width = screenSize[0]
+    height = screenSize[1]
+    print(screenSize)
+    multiplier = int(round(2160/height ,0))
     print(multiplier)
-    baseSize = int(30 * (array[0] / 91))
+    baseSize = int(30 * (height / 1080))
 
-    return multiplier, baseSize
+    return multiplier, baseSize, height, width
+
+def GetTypes():
+    types = ["Movie", "Tv Show"]
+
+    return types
