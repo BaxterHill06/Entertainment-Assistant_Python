@@ -1254,7 +1254,6 @@ def MatchMovies(x):
             dfMovieTest = pd.concat([dfMovieTest, dfTemp ])
     dfMovieTest = dfMovieTest.reset_index(drop=True)
 
-
     try:
         arPrediction = NeuralNetwork(dfUser, dfMovieTest)
         print("RUNING")
