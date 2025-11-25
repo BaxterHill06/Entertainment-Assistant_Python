@@ -3,13 +3,14 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 6
-last updated: 25/06/23
+Version 7
+last updated: 27/06/23
 '''
 
 from tkinter import *
 
 def ScreenSpace(x, y):
+    global array
     file = open("ScreenSize.txt", "r")
     array = []
     for line in file:
@@ -26,3 +27,11 @@ def ScreenFill(frmLocal, space):
 #change font and size
 def ChangeSize(item,font,size):
     item.config(font=(font,size))
+
+
+def ItemSize():
+    global array
+    multiplyer = int(1/(array[0] / 91))
+    baseSize = int(30 * (array[0] / 91))
+
+    return multiplyer, baseSize

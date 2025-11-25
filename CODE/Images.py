@@ -3,20 +3,15 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 6
-last updated: 25/06/23
+Version 7
+last updated: 27/06/23
 '''
 
 
 from tkinter import *
 
-# adds variables and returns them
-def GetImages():
-    plus = PhotoImage(file="plus.png")
-    empLogo = PhotoImage(file="empty_logo.png")
-    return (plus, empLogo)
-
 def GatherIcons():
+    # create a list with the icons for the dropdown box
     icons = ["Joker","Kyle","Mando","Predator","R2","Smurf","Transformer","Yoda","Homer","Hedwig","Grinch","Darth Vader","C-3PO","Black Panther"]
 
     return icons

@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 6
-last updated: 25/06/23
+Version 7
+last updated: 27/06/23
 '''
 
 from tkinter import *
@@ -20,7 +20,7 @@ window.attributes('-fullscreen', True)
 def RunSoftware():
     #gather images
     GetImages()
-
+    InitiateFrames()
 
     #create Exit bar
     ExitCreate(window)
@@ -29,11 +29,9 @@ def RunSoftware():
     space = ScreenSpace(0,0)
 
     #create screens
-    LoginCreate(window,space)
+    LoginCreate(window,space,1)
     AddAccountCreate()
     AccountLoginCreate()
-
-    LoginLoad()
 
 
 RunSoftware()
