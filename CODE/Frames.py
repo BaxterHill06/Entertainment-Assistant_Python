@@ -1,9 +1,9 @@
 '''
- ____ ____ ____ ____ ____ ____ 
+ ____ ____ ____ ____ ____ ____
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 5
+Version 6
 last updated: 25/06/23
 '''
 
@@ -11,9 +11,10 @@ last updated: 25/06/23
 from tkinter import *
 from Images import *
 from functions import *
+import pandas as pd
 
 def GetImages():
-    global imgPlus,empLogo,imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther
+    global imgPlus,imgEmpLogo,imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass, imgMenuPlus
     imgPlus = PhotoImage(file="plus.png")
     imgEmpLogo = PhotoImage(file="empty_logo.png")
     imgSmurf = PhotoImage(file="icons/Smurf.png")
@@ -31,15 +32,13 @@ def GetImages():
     imgC3PO = PhotoImage(file="icons/C-3PO.png")
     imgBlackPanther = PhotoImage(file="icons/Black Panther.png")
 
-#change font and size
-def ChangeSize(item,font,size):
-    item.config(font=(font,size))
-
-def ScreenFill(frmLocal):
-    global space
-    lblAASize = Label(frmLocal, text=space) # create a label the size of the screen to allow for place
-    lblAASize.pack(side="top", fill="both", expand=True)
-
+    imgBook = PhotoImage(file="Menu/book.png")
+    imgClock = PhotoImage(file="Menu/clock.png")
+    imgExit = PhotoImage(file="Menu/exit.png")
+    imgHeart = PhotoImage(file="Menu/heart.png")
+    imgHouse = PhotoImage(file="Menu/House.png")
+    imgMagGlass = PhotoImage(file="Menu/Magnifying glass.png")
+    imgMenuPlus = PhotoImage(file="Menu/Plus.png")
 
 
 #create Exit bar
@@ -62,23 +61,23 @@ def LoginCreate(win,spa):
     frmLogin = Frame(window, bg="white")
 
     #fill the screen
-    ScreenFill(frmLogin)
+    ScreenFill(frmLogin,space)
 
 
     # create heading
     lblLGLogin = Label(frmLogin,text="LOGIN")
-    ChangeSize(lblLGLogin,'Helvetica bold', 70)
-    lblLGLogin.place(relx=0.40, rely=0)
+    ChangeSize(lblLGLogin,'Helvetica bold', 90)
+    lblLGLogin.place(relx=0.5, rely=0.05, anchor="center")
 
 
     # create ADD button
     btnLGAdd = Button(frmLogin,image=imgPlus, command=AddAccountLoad, highlightthickness = 0, bd = 0)
-    btnLGAdd.place(relx=0.75, rely=0.5)
+    btnLGAdd.place(relx=0.8, rely=0.61, anchor= "center")
 
     #add a label under the plus symbol
     lblLGAdd = Label(frmLogin, text="ADD")
     ChangeSize(lblLGAdd,'Helvetica bold', 30)
-    lblLGAdd.place(relx=0.79, rely=0.76)
+    lblLGAdd.place(relx=0.8, rely=0.77, anchor="center")
 
     # Open the Account file account logos
     accountFile = open("UserFile.csv","r")
@@ -97,7 +96,6 @@ def LoginCreate(win,spa):
         accountPassword = accountElements[1]
         accountIcon = accountElements[2]
         LoginIconCreate(accountUsername,accountPassword,accountIcon,element)
-
 
 
 
@@ -140,15 +138,28 @@ def LoginIconCreate(accountUsername,accountPassword, accountIcon,element):
     btnLGAccount.place(relx=section * 0.2, rely=0.61,anchor="center") # place the button based on the section
     lblLGAccount = Label(frmLogin,text=accountUsername)# create the label wit hthe username
     ChangeSize(lblLGAccount, 'Helvetica bold', 30) # change the font and size
-    lblLGAccount.place(relx=section * 0.2, rely=0.8,anchor="center") # place below the logo
+    lblLGAccount.place(relx=section * 0.2, rely=0.77,anchor="center") # place below the logo
 
 
 
 def LoginLoad():
+    global frmAddAccount, frmBar, frmLogin, frmHome
     #forget the other screens that could be on screen
     frmAddAccount.grid_forget()
+    frmAccountLogin.grid_forget()
+    try: # insures the software still runs if the frame has not been created yet
+        frmBar.grid_forget()
+        print("in2")
+    except:
+        pass
+    try:
+        frmHome.grid_forget()
+        print("inside")
+    except:
+        pass
     #load the Login screen
     frmLogin.grid()
+    print("run")
 
 
 def AddAccountCreate():
@@ -156,7 +167,7 @@ def AddAccountCreate():
     frmAddAccount = Frame(window)
     
     #fill the screen
-    ScreenFill(frmAddAccount)
+    ScreenFill(frmAddAccount,space)
     
     #gather needed images 
     imgEmpLogo = PhotoImage(file="empty_logo.png")
@@ -207,7 +218,11 @@ def AddAccountCreate():
     btnAACreate = Button(frmAddAccount,text="CREATE", command= lambda username=entAAUsername, password=entAAPassword, icon=selAAIcon : CreateAccount(username,password,icon))
     btnAACreate.config(width=30,heigh=8)
     btnAACreate.place(relx=0.5, rely=0.9,anchor="center")
-    
+
+    # create back button
+    btnAABack = Button(frmAddAccount, command=LoginLoad, text="BACK")
+    ChangeSize(btnAABack, 'Helvetica bold', 30)
+    btnAABack.place(rely=0.95, relx=0.05, anchor='sw')
 
 #crate the users new account
 def CreateAccount(username, password, icon):
@@ -217,11 +232,8 @@ def CreateAccount(username, password, icon):
     addArray = pd.DataFrame({"Username":username.get(),"Password":password.get(),"Icon":icon.get(),"File":username.get() + ".csv"},index=[username.get()])
     userFile = pd.concat([userFile,addArray])
     userFile.to_csv("UserFile.csv",index=False)
-    print(userFile)
     LoginCreate(window,space)
     LoginLoad()
-
-
 
 
 #change the image on screen to the icon selected by the user
@@ -230,7 +242,6 @@ def IconConfigure():
     iconPath = "icons/" + selAAIcon.get() + ".png"
     iconFile = PhotoImage(file=iconPath)
     lblAALogo.config(image=iconFile)
-    
 
 
 def AddAccountLoad():
@@ -241,34 +252,157 @@ def AddAccountLoad():
     frmAddAccount.grid()
 
 
-
 def AccountLoginCreate():
-    global window, space,imgEmpLogo, frmAccountLogin, lblALLogo
+    global window, space,imgEmpLogo, lblALMessage, frmAccountLogin, lblALLogo,lblALUsername, btnALLogin, entALPassword
     frmAccountLogin = Frame(window) # create the frame to place elements into
 
     #fill the screen
-    ScreenFill(frmAccountLogin)
+    ScreenFill(frmAccountLogin,space)
 
-
+    # create logo label
     lblALLogo = Label(frmAccountLogin,image=imgEmpLogo)
-    lblALLogo.place(relx=0.5, rely=0.2, anchor="center")
+    lblALLogo.place(relx=0.5, rely=0.15, anchor="center")
 
+    # crate name label
+    lblALUsername = Label(frmAccountLogin, text="")
+    ChangeSize(lblALUsername,'Helvetica bold', 30)
+    lblALUsername.place(relx=0.5 , rely=0.3, anchor="center")
 
+    # create label and entry for password
+    lblALPassword = Label(frmAccountLogin,text="ENTER PASSWORD:")
+    ChangeSize(lblALPassword,'Helvetica bold', 60)
+    lblALPassword.place(relx=0.5, rely=0.45, anchor="center")
 
+    entALPassword = Entry(frmAccountLogin, width=25)
+    ChangeSize(entALPassword, 'Helvetica bold', 50)
+    entALPassword.place(relx=0.5, rely=0.58, anchor="center")
+
+    # label to show any errors e.g. wrong password
+    lblALMessage = Label(frmAccountLogin, text="", fg="red")
+    ChangeSize(lblALMessage,'Helvetica bold', 30)
+    lblALMessage.place(relx=0.5, rely=0.7, anchor="center")
+
+    #create "LOGIN" Button
+    btnALLogin = Button(frmAccountLogin,text="LOGIN", height=2, width=15)
+    ChangeSize(btnALLogin, 'Helvetica bold', 30)
+    btnALLogin.place(relx=0.5, rely=0.8, anchor="center")
+
+    # create back button
+    btnALBack = Button(frmAccountLogin, command=LoginLoad, text="BACK")
+    ChangeSize(btnALBack, 'Helvetica bold', 30)
+    btnALBack.place(rely=0.95, relx=0.05, anchor='sw')
 
 
 def AccountLoginLoad(accountUsername, accountPassword, accountIcon):
-    global frmAccountLogin, frmLogin,lblALLogo, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther
+    global frmAccountLogin, frmLogin,lblALLogo,lblALUsername,btnALLogin, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther
     # forget previous frames
     frmLogin.grid_forget()
 
     # configure the logo with the users logo
     lblALLogo.config(image=accountIcon)
 
+    # configure name label
+    lblALUsername.config(text=accountUsername)
 
-
+    # configure button to pass through account info
+    btnALLogin.config(command= lambda name = accountUsername, password = accountPassword:LoginAttempt(name, password))
 
     # grid new frame
     frmAccountLogin.grid()
 
+
+def LoginAttempt(accountUsername,accountPassword):
+    global entALPassword, lblALMessage
+    passwordAttempt = entALPassword.get() # get the entered password
+    entALPassword.delete(0,END)
+    if passwordAttempt == accountPassword: # check if the entered password matches the set password
+        BarCreate() # if correct opens next screen
+    else: # if incorrect displays Incorrect password
+        # add data validation. if empty( please enter a password)
+        lblALMessage.config(text="Incorrect Password")
+
+
+def BarCreate():
+    global window, frmBar, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass
+    frmBar = Frame(window,height=400, width = 400) # create side bar frame
+
+    # create and pack menu buttons
+    btnBRSearch = Button(frmBar, image=imgMagGlass,command=SearchLoad, highlightthickness = 0, bd = 0)
+    btnBRSearch.pack()
+    btnBRHome = Button(frmBar, image=imgHouse,command=HomeLoad, highlightthickness = 0, bd = 0)
+    btnBRHome.pack()
+    btnBRReview = Button(frmBar, image=imgBook, command=ReviewLoad, highlightthickness=0, bd=0)
+    btnBRReview.pack()
+    btnBRMatch = Button(frmBar, image=imgHeart, command=MatchLoad, highlightthickness=0, bd=0)
+    btnBRMatch.pack()
+    btnBRLater = Button(frmBar, image=imgClock, command=WatchLaterLoad, highlightthickness=0, bd=0)
+    btnBRLater.pack()
+    btnBRAdd = Button(frmBar, image=imgMenuPlus, command=AddShowLoad, highlightthickness=0, bd=0)
+    btnBRAdd.pack()
+    btnBRExit = Button(frmBar, image=imgExit, command=LoginLoad, highlightthickness=0, bd=0)
+    btnBRExit.pack(pady=30)
+
+    HomeCreate()
+
+def HomeCreate():
+    global window, frmHome
+    frmHome = Frame(window, width = 500, height=500)
+    barSpace = ScreenSpace(5,1)
+    ScreenFill(frmHome,barSpace)
+
+
+
+    HomeLoad()
+
+def HomeLoad():
+    global frmAccountLogin, frmBar, frmHome
+    # forget previous screens
+    frmAccountLogin.grid_forget()
+
+    # create other screens
+    SearchCreate()
+    ReviewCreate()
+    MatchCreate()
+    WatchLaterCreate()
+    AddShowCreate()
+
+
+
+    #display the side bar and home screen
+    frmBar.grid(column=0,row=0,sticky="NW")
+    frmHome.grid(column=1,row=0)
+
+
+def SearchCreate():
+    print("hi")
+
+def ReviewCreate():
+    print("hi")
+
+def MatchCreate():
+    print("hi")
+
+def WatchLaterCreate():
+    print("hi")
+
+def AddShowCreate():
+    print("hi")
+
+
+
+
+def SearchLoad():
+    print("hi")
+
+def ReviewLoad():
+    print("hi")
+
+def MatchLoad():
+    print("hi")
+
+def WatchLaterLoad():
+    print("hi")
+
+def AddShowLoad():
+    print("hi")
 

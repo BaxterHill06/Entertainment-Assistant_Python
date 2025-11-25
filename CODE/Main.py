@@ -3,7 +3,7 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 5
+Version 6
 last updated: 25/06/23
 '''
 
@@ -26,17 +26,15 @@ def RunSoftware():
     ExitCreate(window)
 
     #collect screen size to allow for place functions
-    space = ScreenSpace()
-
+    space = ScreenSpace(0,0)
 
     #create screens
     LoginCreate(window,space)
     AddAccountCreate()
     AccountLoginCreate()
 
-
-    #load screen
     LoginLoad()
+
 
 RunSoftware()
 
