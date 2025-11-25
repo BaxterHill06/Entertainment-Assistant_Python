@@ -1,8 +1,8 @@
 from tkinter import *
 def GlobalImageFile(selMovie):
-    global imgShrek, imgRiseOfTheGuardians, imgShrek2, imgShrektheThird, imgTheWizardofOz, imgJourneyBacktoOz, imgOzTheGreatandPowerful, imgReturntoOz, imgBacktotheFuture, imgBacktotheFuturePartII, imgBacktotheFuturePartIII, imgJourneytotheCenteroftheEarth, imgJourney2TheMysteriousIsland, imgHalloween, imgHalloweenII, imgHalloweenIII:SeasonoftheWitch, imgHalloween4TheReturnofMichaelMyers, imgHalloween5TheRevengeofMichaelMyers, imgHalloweenTheCurseofMichaelMyers, imgHalloweenH2020YearsLater, imgHalloweenResurrection, imgHalloween2018, imgHalloweenKills, imgHalloweenEnds, imgSpiderMan, imgSpiderMan2, imgSpiderMan3, imgTheAmazingSpiderMan, imgTheAmazingSpiderMan2
+    global imgShrek, imgRiseOfTheGuardians, imgShrek2, imgShrektheThird, imgTheWizardofOz, imgJourneyBacktoOz, imgOzTheGreatandPowerful, imgReturntoOz, imgBacktotheFuture, imgBacktotheFuturePartII, imgBacktotheFuturePartIII, imgJourneytotheCenteroftheEarth, imgJourney2TheMysteriousIsland, imgHalloween, imgHalloweenII, imgHalloweenIIISeasonoftheWitch, imgHalloween4TheReturnofMichaelMyers, imgHalloween5TheRevengeofMichaelMyers, imgHalloweenTheCurseofMichaelMyers, imgHalloweenH2020YearsLater, imgHalloweenResurrection, imgHalloween2018, imgHalloweenKills, imgHalloweenEnds, imgSpiderMan, imgSpiderMan2, imgSpiderMan3, imgTheAmazingSpiderMan, imgTheAmazingSpiderMan2
     imgShrek = PhotoImage(file='Movie Covers/Shrek.png')
-    imgRiseOfTheGuardians = PhotoImage(file='Movie Covers/Movie Covers/Rise of the Guardians.png')
+    imgRiseOfTheGuardians = PhotoImage(file='Movie Covers/Rise of the Guardians.png')
     imgShrek2 = PhotoImage(file='Movie Covers/Shrek 2.png')
     imgShrektheThird = PhotoImage(file='Movie Covers/Shrek the Third.png')
     imgTheWizardofOz = PhotoImage(file='Movie Covers/The Wizard of Oz.png')
@@ -16,7 +16,7 @@ def GlobalImageFile(selMovie):
     imgJourney2TheMysteriousIsland = PhotoImage(file='Movie Covers/Journey 2 The Mysterious Island.png')
     imgHalloween = PhotoImage(file='Movie Covers/Halloween.png')
     imgHalloweenII = PhotoImage(file='Movie Covers/Halloween II.png')
-    imgHalloweenIII:SeasonoftheWitch = PhotoImage(file='Movie Covers/Halloween III Season of the Witch.png')
+    imgHalloweenIIISeasonoftheWitch = PhotoImage(file='Movie Covers/Halloween III Season of the Witch.png')
     imgHalloween4TheReturnofMichaelMyers = PhotoImage(file='Movie Covers/Halloween 4 The Return of Michael Myers.png')
     imgHalloween5TheRevengeofMichaelMyers = PhotoImage(file='Movie Covers/Halloween 5 The Revenge of Michael Myers.png')
     imgHalloweenTheCurseofMichaelMyers = PhotoImage(file='Movie Covers/Halloween The Curse of Michael Myers.png')
@@ -60,8 +60,8 @@ def GlobalImageFile(selMovie):
         mov = imgHalloween
     elif 'Halloween II' == selMovie:
         mov = imgHalloweenII
-    elif 'Halloween III:Season of the Witch' == selMovie:
-        mov = imgHalloweenIII
+    elif 'Halloween III Season of the Witch' == selMovie:
+        mov = imgHalloweenIIISeasonoftheWitch
     elif 'Halloween 4 The Return of Michael Myers' == selMovie:
         mov = imgHalloween4TheReturnofMichaelMyers
     elif 'Halloween 5 The Revenge of Michael Myers' == selMovie:

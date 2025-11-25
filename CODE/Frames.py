@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 12
-last updated: 26/07/23
+Version 13
+last updated: 18/08/23
 '''
 
 
@@ -15,8 +15,13 @@ from Images import *
 from functions import *
 import pandas as pd
 import PIL
-from PIL import Image
+from PIL import Image, ImageTk
+from tkinter import ttk
 #from imageGlobal import *
+import tensorflow as tf 
+from tensorflow import keras
+import numpy as np
+import matplotlib as plt
 
 
 def GetImages():
@@ -100,7 +105,7 @@ def ClearScreens():
 
 
 def LoginCreate(win,spa,screenPage):
-    global frmLogin,imgPlus,window,space, multiplier, baseSize, imgLGPlus, height, width
+    global frmLogin,imgPlus,window,space, multiplier, baseSize, imgLGPlus, height, width, accountInfo
     #def window and space so they can be globaled for other functions
     window = win
     space = spa
@@ -158,7 +163,7 @@ def LoginCreate(win,spa,screenPage):
 
 
 def LoginIconCreate(accountUsername,accountPassword, accountIcon,element, screenPage):
-    global baseSize,multiplier, imgLGLeftArrow, imgLGRightArrow, frmLogin, localIcon,window, space, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgRightArrow, imgLeftArrow
+    global baseSize,multiplier, imgLGLeftArrow, imgLGRightArrow, accountInfo, frmLogin, localIcon,window, space, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgRightArrow, imgLeftArrow
     if accountIcon == "Smurf": # checks what the icon selected is and save the file to a variable
         imageFile = imgSmurf
     elif accountIcon == "Joker":
@@ -215,8 +220,9 @@ def LoginIconCreate(accountUsername,accountPassword, accountIcon,element, screen
     if screenPage != 1:
         btnLGLeft = Button(frmLogin,image=imgLGLeftArrow, highlightthickness = 0, bd = 0, command= lambda window=window, space=space, screenPage=screenPage + -1:LoginCreate(window,space,screenPage))
         btnLGLeft.place(relx=0.05, rely=0.61, anchor="center")
-    btnLGRight = Button(frmLogin,image=imgLGRightArrow, highlightthickness = 0, bd = 0, command= lambda window=window, space=space, screenPage=screenPage + 1:LoginCreate(window,space,screenPage))
-    btnLGRight.place(relx=0.95, rely=0.61, anchor="center")
+    if (((len(accountInfo)-2) // 3) +1 ) != screenPage:
+        btnLGRight = Button(frmLogin,image=imgLGRightArrow, highlightthickness = 0, bd = 0, command= lambda window=window, space=space, screenPage=screenPage + 1:LoginCreate(window,space,screenPage))
+        btnLGRight.place(relx=0.95, rely=0.61, anchor="center")
 
 
 
@@ -303,7 +309,9 @@ def CreateAccount(username, password, icon):
     userFile = pd.concat([userFile,addArray])
     userFile.to_csv("UserFile.csv",index=False)
     # create a deicated file for the user to save their preferences into
-    userFile.to_csv("User Files/" + username + ".csv", index=False)
+    userSpecificFile = open("User Files/" + username + ".csv", "w")
+    userSpecificFile.write("Title,Genre,Type,Length,Year,Rating")
+    userSpecificFile.close()
     
     LoginCreate(window,space,1)
     LoginLoad()
@@ -389,7 +397,9 @@ def AccountLoginLoad(accountUsername, accountPassword, accountIcon):
 
 
 def LoginAttempt(accountUsername,accountPassword):
-    global entALPassword, lblALMessage
+    global entALPassword, lblALMessage, accountUsernameG, accountPassswordG
+    accountUsernameG = accountUsername
+    accountPasswordG = accountPassword
     passwordAttempt = entALPassword.get() # get the entered password
     entALPassword.delete(0,END)
     if passwordAttempt == accountPassword: # check if the entered password matches the set password
@@ -397,6 +407,7 @@ def LoginAttempt(accountUsername,accountPassword):
     else: # if incorrect displays Incorrect password
         # add data validation. if empty( please enter a password)
         lblALMessage.config(text="Incorrect Password")
+
 
 
 def BarCreate():
@@ -433,10 +444,10 @@ def BarCreate():
     btnBRExit = Button(frmBar, image=imgBRExit, command=LoginLoad, highlightthickness=0, bd=0)
     btnBRExit.pack()
 
-    HomeCreate()
+    HomeCreate(1,1)
 
-def HomeCreate():
-    global window, frmHome, baseSize, multiplier, dfMovies, bottomSpace, topSpace, frmHomeTop, height, width, topWidth, mainWidth, topHeight, mainHeight
+def HomeCreate(recLoc, highLoc):
+    global window, frmHome, accountUsernameG, baseSize, multiplier, dfMovies, dfUser, bottomSpace, topSpace, frmHomeTop, height, width, topWidth, mainWidth, topHeight, mainHeight
     #  create variable with spacific size for  the top bar and main dscreent
     topHeight = (height - 20) / 11
     topWidth = ((width) / 13) * 12
@@ -445,6 +456,7 @@ def HomeCreate():
 
     # create the data frame with the movie data in it
     dfMovies = pd.read_csv("files/Libary.csv")
+    dfUser = pd.read_csv("User Files/" + accountUsernameG + ".csv")
 
     # create frames
     frmHome = Frame(window, height=mainHeight, width=mainWidth)
@@ -452,6 +464,7 @@ def HomeCreate():
 
 
     # create sub headings
+    """
     lblHORecent = Label(frmHome, text="Recently Added")
     ChangeSize(lblHORecent, 'Helvetica bold', int(baseSize*0.33))
     lblHORecent.place(relx=0.05, rely=0,anchor="nw")
@@ -459,9 +472,131 @@ def HomeCreate():
     lblHOHigh = Label(frmHome, text="Highly Rated")
     ChangeSize(lblHOHigh, 'Helvetica bold', int(baseSize*0.33))
     lblHOHigh.place(relx=0.05, rely=0.48,anchor="nw")
+    """
 
+    HomeRec(1)
+    HomeHigh(1)
 
     HomeLoad()
+
+
+def HomeRec(recLoc):
+    global dfMovies, cov, frmHomeRec, mainWidth, mainHeight
+    
+    dfRec = ((dfMovies[len(dfMovies)-20:]).iloc[::-1]).reset_index()
+    print(dfRec)
+    frmHomeRec = Frame(frmHome, width=mainWidth, height= int(mainHeight/2), bg="Black")
+    frmHomeRec.grid(row=1, column=1)
+
+    for index, row in dfRec.iterrows(): # loop through each row of the data
+        title = row["Title"]
+        cover = (PhotoImage(file="Movie Covers/" +title + ".png"))
+        HomeRecPlace(title, index, cover, recLoc)
+
+def HomeRecPlace(title, index, cover, recLoc):
+    global multiplier, frmHomeRec, cov, imgHORLeftArrow, imgLeftArrow, imgHORRightArrow, imgRightArrow
+    print(index)
+    page = ((index // 5) + 1)
+
+    if page == recLoc:
+        cov = cover.subsample(int(multiplier*1.7))
+        btnHORImg = Button(frmHomeRec, image=cov, text="Hi")
+        btnHORImg.place(relx=(0.18 * (index % 5) ) + 0.14, rely= 0.5, anchor="center")
+        lblHORTitle = Label(frmHomeRec, text=title)
+        ChangeSize(lblHORTitle,'Helvetica bold', int(baseSize*0.4))
+        lblHORTitle.place(relx=(0.18 * (index % 5) ) + 0.14, rely= 0.9, anchor="center")
+        
+    imgHORLeftArrow = imgLeftArrow.subsample(multiplier)
+    imgHORRightArrow = imgRightArrow.subsample(multiplier)
+
+    if recLoc != 1:
+        btnHORArrowLeft = Button(frmHomeRec, image=imgHORLeftArrow, command = lambda recLoc = recLoc: HomeRec(recLoc-1))
+        btnHORArrowLeft.place(relx=0.04, rely=0.5, anchor = "center")
+
+    if recLoc != 4:
+        btnHORArrowRight = Button(frmHomeRec, image=imgHORRightArrow, command = lambda recLoc = recLoc: HomeRec(recLoc+1))
+        btnHORArrowRight.place(relx=0.96, rely=0.5, anchor = "center")
+
+def HomeHigh(highLoc):
+    global dfMovies, frmHomeHigh
+
+    GetAverageRating()
+
+    frmHomeHigh = Frame(frmHome, width=mainWidth, height= int(mainHeight/2), bg="Black")
+    frmHomeHigh.grid(row=2, column=2)
+
+
+    dfHigh = dfMovies.sort_values("Rating")
+    dfHigh = dfHigh[(len(dfHigh)) - 20:]
+    print(dfHigh)
+    for index, row in dfHigh.iterrows(): # loop through each row of the data
+        title = row["Title"]
+        cover = (PhotoImage(file="Movie Covers/" +title + ".png"))
+        HomeRecPlace(title, index, cover, highLoc)
+    
+
+def HomeHighPlace(title, index, cover, highLoc):
+    global frmHomeHigh
+
+    if page == highLoc:
+        cov = cover.subsample(int(multiplier*1.7))
+        btnHOHImg = Button(frmHomeHigh, image=cov, text="Hi")
+        btnHOHImg.place(relx=(0.18 * (index % 5) ) + 0.14, rely= 0.5, anchor="center")
+        lblHOHTitle = Label(frmHomeHigh, text=title)
+        ChangeSize(lblHOHTitle,'Helvetica bold', int(baseSize*0.4))
+        lblHOHTitle.place(relx=(0.18 * (index % 5) ) + 0.14, rely= 0.9, anchor="center")
+        
+    imgHOHLeftArrow = imgLeftArrow.subsample(multiplier)
+    imgHOHRightArrow = imgRightArrow.subsample(multiplier)
+
+    if highLoc != 1:
+        btnHOHArrowLeft = Button(frmHomeHigh, image=imgHOLeftArrow, command = lambda highLoc = recLoc: HomeHigh(highLoc-1))
+        btnHOHArrowLeft.place(relx=0.04, rely=0.5, anchor = "center")
+
+    if highLoc != 4:
+        btnHOArrowRight = Button(frmHomeHigh, image=imgHORightArrow, command = lambda highLoc = recLoc: HomeHigh(highLoc+1))
+        btnHOArrowRight.place(relx=0.96, rely=0.5, anchor = "center")
+
+    
+
+
+    
+def GetAverageRating():
+    userFile = open("UserFile.csv", "r")
+    
+    
+    users = []
+    for line in userFile:
+        print(line, "line")
+        line = line.split(",")
+        print(line, "line2")
+        users.append(line[0])
+    users = users[1:]
+    print(users)
+
+    for indexMov, rowMov in dfMovies.iterrows(): # loop through each row of the data
+        score = 0
+        count = 0
+        for name in users:
+            dfAccount = pd.read_csv("User files/" + name + ".csv")
+            for indexAcc, rowAcc in dfAccount.iterrows(): # loop through each row of the data
+                title = rowAcc["Title"]
+                rating = rowAcc["Rating"]
+                if title == rowMov["Title"]:
+                    score += rating
+                    count += 1
+        try:
+            average = score/count
+        except:
+            average = -1
+        dfMovies.at[indexMov, "Rating"] = average
+        
+    print(dfMovies)
+
+    dfMovies.to_csv("Files/Libary.CSV", index=False)
+        
+        
+        
 
 def HomeLoad():
     global frmAccountLogin, frmBar, frmHome, multiplier, frmHomeTop
@@ -562,7 +697,7 @@ def SearchCreate():
 
 
 def ClearSearchTop():
-    global entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop
+    global entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop, mainHeight
     # clear the entries
     entSRTLength.delete(0,END)
     entSRTYear.delete(0,END)
@@ -578,7 +713,7 @@ def ClearSearchTop():
 
 
 def SearchLibary():
-    global window, dfMovies, imgSmurf, frmSearch, entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, frmSearch, lblMBTitle, movImage, lblMBCover
+    global window, frmMovieBox, scrSearch, dfMovies, imgSmurf, frmSearch, entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, frmSearch, lblMBTitle, movImage, lblMBCover
     # get the input from the entry boxes
     
     movLength = entSRTLength.get()
@@ -598,17 +733,35 @@ def SearchLibary():
 
     # run the function to sort the movies by the criteria 
     movieSort = SearchSort(movTitle,movGenre,movType,movLength,movYear)
-    
 
-    for loc in range(2):
-        FillScreenMovies(movieSort[loc][0], frmSearch)
+    # create a canvas for scroll bar
+    canSearch = Canvas(frmSearch, width=int(mainWidth-30), height=mainHeight)
+    canSearch.pack(side=LEFT, fill=BOTH, expand=1)
+
+    # add scroll bar
+    scrSearch = ttk.Scrollbar(frmSearch, orient=VERTICAL, command=canSearch.yview)
+    scrSearch.pack(side=RIGHT, fill=Y)
+
+    #configure the canvas
+    canSearch.configure(yscrollcommand=scrSearch.set)
+    canSearch.bind("<Configure>", lambda e:canSearch.configure(scrollregion=canSearch.bbox("all")))
+
+    # create another frame inside canvas
+    frmSearchScroll = Frame(canSearch, width=mainWidth-30, height=mainHeight)
+
+    # add that new frame to a window in the canvas
+    canSearch.create_window((0,0), window=frmSearchScroll, anchor="nw")
+
+    
     frmSearch.grid()
-    SearchLoad()
+    for loc in range(12):
+        FillScreenMovies(movieSort[loc][0], frmSearchScroll)
+        SearchLoad()
     
 
 
 def FillScreenMovies(selMovie, frm):
-    global dfMovies, multiplier, frmMovieBox, mov, lblMBTitle, frmSearch, imgOzTheGreatandPowerful, imgTheWizardofOz
+    global dfMovies, multiplier, scrSearch, frmMovieBox, mov, lblMBTitle, frmSearch, imgOzTheGreatandPowerful, imgTheWizardofOz
     global baseSize,multiplier, imgLGLeftArrow, imgLGRightArrow, frmLogin, localIcon,window, space, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgRightArrow, imgLeftArrow
    
     frmMovieBox = Frame(frm, width=mainWidth, height=mainHeight/4, highlightbackground="black", highlightthickness=2)
@@ -734,13 +887,45 @@ def ReviewCreate():
     print("hi")
 
 def MatchCreate():
-    print("hi")
+    global dfMovies, dfUser
+    
+    dfMovieTest = pd.read_csv("Files/dfMovieTestFrame.CSV")
+
+    
+    for indexM, rowM in dfMovies.iterrows(): # loop through each row of the data
+        dfGenre = pd.read_csv("Files/Genre.CSV")
+        inside = False
+        for indexU, rowU in dfUser.iterrows(): # loop through each row of the data 
+            if rowU["Title"] == rowM["Title"]:
+                inside = True
+
+        if inside == False:
+            try:
+                gen = rowM["Genre"].split("/")
+            except:
+                gen = [rowM["Genre"]]
+            for item in gen:
+                print(gen)
+                print(item)
+                dfGenre.at[0, item] = 1
+            print(dfGenre)
+            genre = (str(dfGenre.to_numpy().flatten())).strip("[").strip("]")
+            print(genre, "genre")
+            
+            dfTemp = pd.DataFrame({"Title":rowM["Title"], "Genre":genre, "Type":rowM["Type"], "Length":rowM["Length"], "Year":rowM["Year"]}, index=[rowM["Title"]])
+            dfMovieTest = pd.concat([dfMovieTest, dfTemp ])
+    dfMovieTest = dfMovieTest.reset_index(drop=True)
+
+    NeuralNetwork(dfUser, dfMovieTest)
+    
+
+    
 
 def WatchLaterCreate():
     print("hi")
 
 def AddShowCreate():
-    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, selASType, entASTitle, entASGenre, dropASType, entASLength, entASYear, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
+    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, entASRating, selASType, entASTitle, entASGenre, dropASType, entASLength, entASYear, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
     # create the frames
     frmAddShowTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
     frmAddShow = Frame(window, width=mainWidth, height=mainHeight)
@@ -837,39 +1022,44 @@ def AddShowCreate():
     btnASAdd.place(relx=0.5, rely=0.9, anchor="center")
 
 def AddShowConfigure():
-    global entASFile, lblASCover, imgMovieCover, multiplier
+    global entASFile, lblASCover, imgMovieCover, multiplier, imgCover
     # collects the file path and swaps any back slashes to forward slashes and removes any ""
     filePath = (entASFile.get()).replace("\\", "/").strip('"')
-    
-    # collects the title of the image
-    fileName = (filePath.split("/"))
-    fileName = fileName[len(fileName)-1]
+
+
+    # resize the image to the base size
+    imgCover = Image.open(filePath)
+    imgCoverResize = imgCover.resize((int(850/multiplier),int(1250/multiplier)))
+    imgCover = ImageTk.PhotoImage(imgCoverResize)
+
+    # resize the image to the screen size and configure the lbl to appear on screen
+    #imgMovieCover = PhotoImage(file="Movie Covers/" + fileName)
+    #imgMovieCover = imgCoverResize.subsample(multiplier)
+    lblASCover.config(image=imgCover)
+
+def AddShow():
+    global entASTitle, entASFile, entASGenre, dropASType, entASLength, entASYear, selASType, accountUsername, entASRating
+    # read from libary file
+    libaryDataFrame = pd.read_csv("Files/Libary.CSV")
+
+
+    # get the name of the image 
+    fileName = "Movie Covers/" + entASTitle.get() + ".png"
 
     # resize the image to the base size
     imgCover = Image.open(filePath)
     imgCoverResize = imgCover.resize((800,1200))
     imgCoverResize.save("Movie Covers/" + fileName)
 
-    # resize the image to the screen size and configure the lbl to appear on screen
-    imgMovieCover = PhotoImage(file="Movie Covers/" + fileName)
-    imgMovieCover = imgMovieCover.subsample(multiplier)
-    lblASCover.config(image=imgMovieCover)
-
-def AddShow():
-    global entASTitle, entASFile, entASGenre, dropASType, entASLength, entASYear, selASType
-    # read from libary file
-    libaryDataFrame = pd.read_csv("Files/Libary.CSV")
-
-    # get the name of the image 
-    filePath = (entASFile.get()).replace("\\", "/").strip('"')
-    fileName = (filePath.split("/"))
-    fileName = "Movie Covers/" + fileName[len(fileName)-1]
-
     # add new item to the data frame and save to file
     addDataFrame = pd.DataFrame({"Title":entASTitle.get(), "File":fileName, "Genre":entASGenre.get(), "Type":selASType.get(), "Length":entASLength.get(), "Year":entASYear.get()}, index=[entASTitle.get()])
-    userFile = pd.concat([libaryDataFrame, addDataFrame])
-    userFile.to_csv("Files/Libary.CSV",index=False)
+    libaryFile = pd.concat([libaryDataFrame, addDataFrame])
+    libaryFile.to_csv("Files/Libary.CSV",index=False)
+
+    userFile = open("User Files/" + accountUsername + ".csv", "a")
+    userFile.write("\n" + entASTitle.get() + "," + entASGenre.get() + "," + selASType.get() + "," + entASLength.get() + "," + entASYear.get()) 
     # return to the home screen
+    
     HomeLoad()
     
 
@@ -905,7 +1095,7 @@ def AddShowLoad():
     frmAddShow.grid(column=1,row=1,sticky="NE")
 
 def ShowInfoCreate(selMovie):
-    global dfMovies, window, mainHeight, mainWidth, topHeight, topWidth, frmShowInfoTop, frmShowInfo, multiplier, baseSize, imgSICover
+    global dfMovies, dfUser, accountUsernameG, window, entSIRating, mainHeight, mainWidth, topHeight, topWidth, frmShowInfoTop, frmShowInfo, multiplier, baseSize, imgSICover
     # create the frames
     frmShowInfoTop = Frame(window,highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
     frmShowInfo = Frame(window, width=mainWidth, height=mainHeight)
@@ -918,6 +1108,10 @@ def ShowInfoCreate(selMovie):
     showType = row.iloc[0,3]
     showLength = str(row.iloc[0,4])
     showYear = str(row.iloc[0,5])
+
+    # collect df from users account
+    dfUser = pd.read_csv("User Files/" + accountUsernameG + ".csv")
+    
     
     
 
@@ -956,9 +1150,53 @@ def ShowInfoCreate(selMovie):
     ChangeSize(lblSIType, 'Helvetica bold', int(baseSize*1.7))
     lblSIType.place(relx=0.55, rely=0.4, anchor="nw")
 
+    lblSIRate = Label(frmShowInfo, text="ADD RATING")
+    ChangeSize(lblSIRate,  'Helvetica bold', baseSize)
+    lblSIRate.place(relx=0.9, rely=0.15, anchor="center")
+
+    rated = False
+    for index, row in dfUser.iterrows(): # loop through each row of the data 
+        if row["Title"] == selMovie:
+            lblSIRate.config(text="YOUR RATING")
+            rated = True
+    if rated == True:
+        lblSIRating = Label(frmShowInfo, text=row["Rating"])
+        ChangeSize(lblSIRating,  'Helvetica bold', baseSize)
+        lblSIRating.place(relx=0.9, rely=0.2, anchor="center")
+        print("True")
+    elif rated == False:
+        entSIRating = Entry(frmShowInfo, width=int(mainWidth/150))
+        ChangeSize(entSIRating,  'Helvetica bold', baseSize)
+        entSIRating.place(relx=0.9, rely=0.2, anchor="center")
+
+        btnSISubmit = Button(frmShowInfo, text="SUBMIT", command=lambda selMovie=selMovie: RefreshShowInfo(selMovie))
+        ChangeSize(btnSISubmit,  'Helvetica bold', baseSize)
+        btnSISubmit.place(relx=0.9, rely=0.28, anchor="center")
+
+        
+        print("False")
+    else:
+        print("else")
+        
     
 
     ShowInfoLoad()
+
+def RefreshShowInfo(selMovie):
+    global entSIRating, accountUsernameG, dfUser, dfMovies
+    rating = entSIRating.get()
+
+    file = open("User Files/" + accountUsernameG + ".csv", "a")
+    for index, row in dfMovies.iterrows(): # loop through each row of the data
+        if row["Title"] == selMovie:
+            file.write("\n" + row["Title"] + "," + row["Genre"] + "," + row["Type"] + "," + str(row["Length"]) + "," + str(row["Year"]) + "," + str(rating))
+        
+    file.close()
+
+    ClearScreens()
+    ShowInfoCreate(selMovie)
+    
+    
 
 def ShowInfoLoad():
     global frmShowInfoTop, frmShowInfo

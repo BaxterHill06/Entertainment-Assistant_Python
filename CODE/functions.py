@@ -3,14 +3,24 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 12
-last updated: 26/07/23
+Version 13
+last updated: 18/08/23
 '''
 
 
 from tkinter import *
 import pandas as pd 
 import ctypes
+import tensorflow as tf 
+import keras
+import numpy as np
+import matplotlib as plt
+from keras import layers
+import sklearn
+from sklearn import linear_model
+from sklearn.utils import shuffle
+import csv
+
 
 def ScreenSpace(x, y):
     global array
@@ -59,7 +69,8 @@ def SearchSort(inTitle,inGenre,inType,inLength,inYear):
     # create a 2-D array
     movieScores = []
 
-    for index, row in dfMovies.iterrows(): # loop through each row of the data 
+    for index, row in dfMovies.iterrows(): # loop through each row of the data
+        # score the data for each set of data
         libTitle = row["Title"]
         titleVal = TitleSearch(libTitle, inTitle)
 
@@ -116,48 +127,42 @@ def TitleSearch(libTitle, inTitle):
 
 
 def GenreSearch(libGenre, inGenre):
-    libGenreSplit = libGenre.split("/")
-    inGenreSplit = inGenre.split("/")
+    libGenreSplit = libGenre.split("/") # split the genre into two if there are 2
+    inGenreSplit = inGenre.split("/") # split the genre into two if there are 2
 
-    score = 0
+    score = 0 # set score to 0 
 
-    for inMovie in inGenreSplit:
-        for libMovie in libGenreSplit:
+    for inMovie in inGenreSplit: # loop through the genres entered
+        for libMovie in libGenreSplit: # loop through the genres of the movie
             if inMovie.lower() == libMovie.lower():
-                score += 2
+                score += 2 # add two points if the genre is the same
             
     return score
 
 def TypeSearch(libType, inType):
     score = 0
     if libType == inType:
-        score += 4
+        score += 4 # add 4 points if they arethe same type("Movie", "TV-Show")
 
     return score
 
 def LengthSearch(libLength, inLength):
-    libLengthSplit = str(libLength).split(".")
-    inLengthSplit = str(inLength).split(".")
-
-    libLengthMin = (int(libLengthSplit[0]) * 60) + int(libLengthSplit[1])
-    try:
-        inLengthMin = (int(inLengthSplit[0]) * 60) + int(inLengthSplit[1])
-    except:
-        inLengthMin = 0
-
-    # note. float removes last decimal so 2.10 becomes 2 and 1 ( 120 + 1)
-    # use if statment to check length of split[1] and times by 10
-
     score = 0
+
+    libLength = int(libLength)
+    try:
+        inLength = int(inLength)
+    except:
+        inLength = 0
     
-    if inLengthMin == libLengthMin:
-        score += 10
-    elif inLengthMin * 0.9 <= libLengthMin and inLengthMin * 1.1 >= libLengthMin:
-        score += 5
-    elif inLengthMin * 0.8 <= libLengthMin and inLengthMin * 1.2 >= libLengthMin:
-        score += 4
-    elif inLengthMin * 0.6 <= libLengthMin and inLengthMin * 1.4 >= libLengthMin:
-        score += 3
+    if inLength == libLength:
+        score += 10 # add 10 points if the lenth is exactly correct
+    elif inLength * 0.9 <= libLength and inLength * 1.1 >= libLength: 
+        score += 5 # add 5 points if the length is within 10%
+    elif inLength * 0.8 <= libLength and inLength * 1.2 >= libLength:
+        score += 4 # add 4 points if the length is within 20%
+    elif inLength * 0.6 <= libLength and inLength * 1.4 >= libLength:
+        score += 3 # add 5 points if the length is within 40%
 
     return score
 
@@ -171,13 +176,13 @@ def YearSearch(libYear, inYear):
     score = 0
     
     if inYear == libYear:
-        score = 7
+        score = 7 # add 7 points if it is the same year
     elif inYear + 5 <= libYear and inYear - 5 >= libYear:
-        score = 6
+        score = 6 # add 6 pointsx if it is within 5 years
     elif inYear + 10 <= libYear and inYear - 10 >= libYear:
-        score = 5
+        score = 5 # add 5 pointsx if it is within 10 years
     elif inYear + 20 <= libYear and inYear - 20 >= libYear:
-        score = 4
+        score = 4 # add 4 pointsx if it is within 20 years
 
     return score
     
@@ -220,7 +225,112 @@ def RefreshImageFile():
     file = open("imageGlobal.py", "w")
     file.write(text)
 
-         
+def NeuralNetwork(dfUser, dfTestMovie):
+    print(dfTestMovie, "test")
+    dfUser = dfUser[["Genre","Type","Length","Year","Rating"]]
+    dfUser = dfUser.replace({"Type": {"Movie": 0, "Tv-Show":1}})
+
+    dfUserFix = pd.read_csv("Files/dfMovieTestFrame.CSV")
+    dfUserFix = dfUserFix.drop(columns=["Title"])
+    dfUserFix["Rating"] = ""
+    
+    for indexU, rowU in dfUser.iterrows(): # loop through each row of the data
+        dfGenre = pd.read_csv("Files/Genre.CSV")
+
+        try:
+            gen = rowU["Genre"].split("/")
+        except:
+            gen = [rowU]
+        for item in gen:
+            dfGenre.at[0, item] = 1
+        genre = (str(dfGenre.to_numpy().flatten()).strip("[").strip("]"))
+        dfTemp = pd.DataFrame({"Genre":genre, "Type":rowU["Type"], "Length":rowU["Length"], "Year":rowU["Year"], "Rating":rowU["Rating"]}, index=["Genre"])
+        dfTemp.to_csv("Files/dfTemp.CSV", quoting=csv.QUOTE_NONE, quotechar="",  escapechar=" ", index=False)
+        dfTemp = pd.read_csv("Files/dfTemp.CSV")
+        
+        dfUserFix = pd.concat([dfUserFix, dfTemp])
+    dfUserFix = dfUserFix.reset_index(drop=True)
+    dfUserFix.to_csv("Files/dfTemp.CSV", index=False)
+
+    print(dfUserFix, "df")
+
+
+    # Extract the Genre column and convert it to a list of lists
+    genre_values = dfUserFix["Genre"].apply(lambda x: list(map(int, x.split()))).tolist()
+
+    # Convert the DataFrame to a NumPy array
+    arTrainData = dfUserFix.drop("Genre", axis=1).values
+
+    # Make sure the genre_values have the same number of columns as arTrainData
+    genre_values = np.array(genre_values)
+
+    # Insert the Genre values back into the array
+    arTrainData = np.concatenate((genre_values, arTrainData), axis=1)
+
+    
+    arTrainRating = (np.array(dfUserFix["Rating"])).flatten()
+
+    print(np.shape(arTrainData))
+    print(np.shape(arTrainRating))
+
+    print(arTrainData)
+    print(arTrainRating)
+
+    trainData, testData, trainRating, testRating = sklearn.model_selection.train_test_split(arTrainData, arTrainRating, test_size=0.1)
+
+    #trainRating = trainRating.flatten()
+
+    
+    
+
+    """
+    linear = linear_model.LinearRegression()
+
+
+    print(trainData)
+    linear.fit(trainData, trainRating)
+    acc = linear.score(testData, testRating)
+    print(acc)
+    """
+    
+    print("\n\n\n\n\n" , trainData)
+        
+    # Convert trainData to numpy.float32
+    trainData = trainData.astype(np.float32)
+
+    # Convert trainRating to numpy.int32
+    trainRating = trainRating.astype(np.int32)
+
+    # Convert trainData to numpy.float32
+    testData = testData.astype(np.float32)
+
+    # Convert trainRating to numpy.int32
+    testRating = testRating.astype(np.int32)
+
+    model = keras.Sequential([
+    keras.layers.Input(shape=(trainData.shape[1],)),  # Input layer
+    keras.layers.Dense(2000, activation="relu"),       # Hidden layer 1
+    keras.layers.Dropout(0.3),
+    keras.layers.Dense(1, activation="linear")        # Output layer
+    ])
+
+    optimizer = keras.optimizers.Adam(learning_rate=0.001)
+
+    # Compile the model with Mean Squared Error (MSE) loss
+    model.compile(optimizer=optimizer, loss="mean_squared_error", metrics=["accuracy"])
+
+    # Train the model
+    model.fit(trainData, trainRating, epochs=100, batch_size=32, validation_split=0.2)
+
+    prediction = model.predict(testData)
+    print(prediction)
+    
+    for i in range(len(prediction)):
+        print(testRating[i], prediction[i-1])
+    
+    
+    
+    
 
 
 

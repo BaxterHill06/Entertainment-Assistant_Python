@@ -1,4 +1,20 @@
-Username,Password,Icon,File
-Kyle,red,Kyle,Kyle.csv
-Mando,blue,Mando,Mando.csv
-baxter,1,Smurf,baxter.csv
+Title,Genre,Type,Length,Year,Rating
+Rise Of The Guardians,Animated,Movie,97,2012,85
+The Wizard of Oz,Musical/Fantasy,Movie,112,1939,78
+Oz The Great and Powerful,Fantasy/Adventure,Movie,130,2013,79
+Return to Oz,Fantasy/Family,Movie,113,1985,77
+Back to the Future,Science Fiction/Comedy,Movie,116,1985,76
+Back to the Future Part II,Science Fiction/Adventure,Movie,108,1989,71
+Back to the Future Part III,Western/Science Fiction,Movie,118,1990,72
+Journey to the Center of the Earth,Adventure/Fantasy,Movie,93,2008,90
+Spider-Man,Action/Fantasy,Movie,121,2002,55
+Spider-Man 2,Action/Adventure,Movie,127,2004,50
+Spider-Man 3,Action/Science Fiction,Movie,139,2007,45
+The Amazing Spider-Man,Action/Adventure,Movie,136,2012,25
+The Amazing Spider-Man 2,Action/Adventure,Movie,142,2014,75
+Halloween,Horror/Thriller,Movie,91,1978,80
+Halloween II,Horror/Thriller,Movie,92,1981,76
+Halloween H20 20 Years Later,Horror/Thriller,Movie,86,1998,55
+Halloween Kills,Slasher/Thriller,Movie,106,2021,72
+Halloween Ends,Horror/Thriller,Movie,111,2022,80
+Halloween(2018),Horror/Thriller,Movie,109,2018,60
