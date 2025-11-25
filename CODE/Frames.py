@@ -3,13 +3,12 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 9
-last updated: 04/07/23
+Version 10
+last updated: 12/07/23
 '''
 
 
-# note/ remimndering
-#try manualy entering the width or height of the label or maybe the frame to see if we can bypass the "   " and \n
+
 
 from tkinter import *
 from Images import *
@@ -115,7 +114,7 @@ def LoginCreate(win,spa,screenPage):
 
     print("height:", height, "width:", width)
     #create Frame
-    frmLogin = Frame(window, bg="white", width=width-35, height=height-20, highlightbackground="blue", highlightthickness=4)
+    frmLogin = Frame(window, bg="white", width=width, height=height-20, highlightbackground="blue", highlightthickness=4)
 
 
     # create heading
@@ -296,7 +295,7 @@ def AddAccountCreate():
 def CreateAccount(username, password, icon):
     global window, space
     #crate account file with username, password, icon, personal file location
-    userFile = pd.read_csv("UserFile.csv",)
+    userFile = pd.read_csv("UserFile.csv")
     addArray = pd.DataFrame({"Username":username.get(),"Password":password.get(),"Icon":icon.get(),"File":username.get() + ".csv"},index=[username.get()])
     userFile = pd.concat([userFile,addArray])
     userFile.to_csv("UserFile.csv",index=False)
@@ -434,9 +433,9 @@ def HomeCreate():
     global window, frmHome, baseSize, multiplier, bottomSpace, topSpace, frmHomeTop, height, width, topWidth, mainWidth, topHeight, mainHeight
     #  create variable with spacific size for  the top bar and main dscreent
     topHeight = (height - 20) / 11
-    topWidth = ((width - 35) / 13) * 12
+    topWidth = ((width) / 13) * 12
     mainHeight = ((height - 20) / 12) * 11
-    mainWidth = ((width - 35) / 13) * 12
+    mainWidth = ((width) / 13) * 12 
 
     # create frames
     frmHome = Frame(window, height=mainHeight, width=mainWidth)
@@ -482,24 +481,29 @@ def SearchCreate():
 
     # create elements on screen
     lblSRTHeading = Label(frmSearchTop, text="SEARCH")
-    ChangeSize(lblSRTHeading,  'Helvetica bold', int(baseSize))
+    ChangeSize(lblSRTHeading,  'Helvetica bold', int(baseSize*1.5))
     lblSRTHeading.place(relx=0.01, rely=0.1, anchor="nw")
 
 
     lblSRTLength = Label(frmSearchTop, text="Length")
-    lblSRTLength.place(relx=0.01, rely=0.01, anchor="nw")
+    ChangeSize(lblSRTLength,  'Helvetica bold', int(baseSize/1.3))
+    lblSRTLength.place(relx=0.2, rely=0.01, anchor="n")
 
     lblSRTType = Label(frmSearchTop, text="Type")
-    lblSRTType.place(relx=0.01, rely=0.01, anchor="nw")
+    ChangeSize(lblSRTType,  'Helvetica bold', int(baseSize/1.3))
+    lblSRTType.place(relx=0.35, rely=0.01, anchor="n")
 
     lblSRTYear = Label(frmSearchTop, text="Year")
-    lblSRTYear.place(relx=0.01, rely=0.01, anchor="nw")
+    ChangeSize(lblSRTYear,  'Helvetica bold', int(baseSize/1.3))
+    lblSRTYear.place(relx=0.5, rely=0.01, anchor="n")
 
     lblSRTGenre = Label(frmSearchTop, text="Genre")
-    lblSRTGenre.place(relx=0.01, rely=0.01, anchor="nw")
+    ChangeSize(lblSRTGenre,  'Helvetica bold', int(baseSize/1.3))
+    lblSRTGenre.place(relx=0.65, rely=0.01, anchor="n")
 
     lblSRTTitle = Label(frmSearchTop, text="Title")
-    lblSRTTitle.place(relx=0.01, rely=0.01, anchor="nw")
+    ChangeSize(lblSRTTitle,  'Helvetica bold', int(baseSize/1.3))
+    lblSRTTitle.place(relx=0.8, rely=0.01, anchor="n")
 
 
 
@@ -519,7 +523,7 @@ def WatchLaterCreate():
     print("hi")
 
 def AddShowCreate():
-    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
+    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, selASType, entASTitle, entASGenre, dropASType, entASLength, entASYear, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
     # create the frames
     frmAddShowTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
     frmAddShow = Frame(window, width=mainWidth, height=mainHeight)
@@ -530,6 +534,8 @@ def AddShowCreate():
 
     # change size of image
     imgASDownArrow = imgDownArrow.subsample(multiplier*3)
+    imgASTPlus = imgPlus.subsample(multiplier*3)
+    imgASEmptyCover = imgEmptyCover.subsample(multiplier)
 
 
 
@@ -538,12 +544,9 @@ def AddShowCreate():
     ChangeSize(lblASTHeading,'Helvetica bold', int(baseSize*1.7))
     lblASTHeading.place(relx=0.01, rely=0.06, anchor="nw")
 
-    # change size of image
-    imgASTPlus = imgPlus.subsample(int(13 / multiplier))
-    imgASEmptyCover = imgEmptyCover.subsample(multiplier)
 
     lblASTLogo = Label(frmAddShowTop, image=imgASTPlus)
-    lblASTLogo.place(relx=0.95, rely=0.06, anchor="ne")
+    lblASTLogo.place(relx=0.99, rely=0.06, anchor="ne")
 
     # create the elements on screen
     lblASTitle = Label(frmAddShow, text="Title")
@@ -618,22 +621,44 @@ def AddShowCreate():
 
 def AddShowConfigure():
     global entASFile, lblASCover, imgMovieCover, multiplier
+    # collects the file path and swaps any back slashes to forward slashes and removes any ""
     filePath = (entASFile.get()).replace("\\", "/").strip('"')
+    
+    # collects the title of the image
     fileName = (filePath.split("/"))
     fileName = fileName[len(fileName)-1]
+
+    # resize the image to the base size
     imgCover = Image.open(filePath)
     print(imgCover.height)
     imgCoverResize = imgCover.resize((800,1200))
     imgCoverResize.save("Movie Covers/" + fileName)
 
-
+    # resize the image to the screen size and configure the lbl to appear on screen
     imgMovieCover = PhotoImage(file="Movie Covers/" + fileName)
     imgMovieCover = imgMovieCover.subsample(multiplier)
     lblASCover.config(image=imgMovieCover)
 
 def AddShow():
-    pass
+    global entASTitle, entASFile, entASGenre, dropASType, entASLength, entASYear, selASType
+    # read from libary file
+    libaryDataFrame = pd.read_csv("Files/Libary.CSV")
 
+    # get the name of the image 
+    filePath = (entASFile.get()).replace("\\", "/").strip('"')
+    fileName = (filePath.split("/"))
+    fileName = "Movie Covers/" + fileName[len(fileName)-1]
+
+    # add new item to the data frame and save to file
+    addDataFrame = pd.DataFrame({"Title":entASTitle.get(), "File":fileName, "Genre":entASGenre.get(), "Type":selASType.get(), "Length":entASLength.get(), "Year":entASYear.get()}, index=[entASTitle.get()])
+    userFile = pd.concat([libaryDataFrame, addDataFrame])
+    userFile.to_csv("Files/Libary.CSV",index=False)
+    # return to the home screen
+    HomeLoad()
+    
+
+
+    
 def SearchLoad():
     global frmSearchTop, frmSearch, frmHome
     # clear previous screens
