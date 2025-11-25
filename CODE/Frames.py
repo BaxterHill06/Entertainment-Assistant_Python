@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 11
-last updated: 15/07/23
+Version 12
+last updated: 26/07/23
 '''
 
 
@@ -16,6 +16,8 @@ from functions import *
 import pandas as pd
 import PIL
 from PIL import Image
+#from imageGlobal import *
+
 
 def GetImages():
     global imgPlus,imgEmpLogo,imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass, imgMenuPlus,imgRightArrow, imgLeftArrow, imgEmptyCover, imgDownArrow, imgUpArrow
@@ -62,7 +64,7 @@ def ExitCreate(window):
     window.config(menu=menuBar)
 
 def InitiateFrames():
-    global frmLogin, frmAccountLogin, frmAddAccount, frmSearchTop, frmSearch, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
+    global frmLogin, frmAccountLogin, frmMovieBox, frmAddAccount, frmSearchTop, frmSearch, frmShowInfo, frmShowInfoTop, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
     frmLogin = ""
     frmAccountLogin = ""
     frmAddAccount = ""
@@ -80,11 +82,14 @@ def InitiateFrames():
     frmWatchLater = ""
     frmAddShowTop = ""
     frmAddShow = ""
+    frmShowInfo = ""
+    frmShowInfoTop = ""
+    frmMovieBox = ""
 
 
 def ClearScreens():
-    global frmLogin ,frmAccountLogin, frmSearchTop, frmSearch, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
-    frames = [frmLogin ,frmAccountLogin, frmAddAccount, frmSearchTop, frmSearch, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow]
+    global frmLogin ,frmAccountLogin, frmSearchTop, frmSearch, frmShowInfo, frmShowInfoTop, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
+    frames = [frmLogin ,frmMovieBox, frmAccountLogin, frmAddAccount, frmSearchTop, frmSearch, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow, frmShowInfo, frmShowInfoTop]
     for frame in frames:
         try:
             frame.grid_forget()
@@ -291,11 +296,15 @@ def AddAccountCreate():
 #crate the users new account
 def CreateAccount(username, password, icon):
     global window, space
-    #crate account file with username, password, icon, personal file location
+    username = username.get()
+    # add account info to a csv file
     userFile = pd.read_csv("UserFile.csv")
-    addArray = pd.DataFrame({"Username":username.get(),"Password":password.get(),"Icon":icon.get(),"File":username.get() + ".csv"},index=[username.get()])
+    addArray = pd.DataFrame({"Username":username,"Password":password.get(),"Icon":icon.get(),"File":username + ".csv"},index=[username])
     userFile = pd.concat([userFile,addArray])
     userFile.to_csv("UserFile.csv",index=False)
+    # create a deicated file for the user to save their preferences into
+    userFile.to_csv("User Files/" + username + ".csv", index=False)
+    
     LoginCreate(window,space,1)
     LoginLoad()
 
@@ -427,12 +436,15 @@ def BarCreate():
     HomeCreate()
 
 def HomeCreate():
-    global window, frmHome, baseSize, multiplier, bottomSpace, topSpace, frmHomeTop, height, width, topWidth, mainWidth, topHeight, mainHeight
+    global window, frmHome, baseSize, multiplier, dfMovies, bottomSpace, topSpace, frmHomeTop, height, width, topWidth, mainWidth, topHeight, mainHeight
     #  create variable with spacific size for  the top bar and main dscreent
     topHeight = (height - 20) / 11
     topWidth = ((width) / 13) * 12
     mainHeight = ((height - 20) / 12) * 11
-    mainWidth = ((width) / 13) * 12 
+    mainWidth = ((width) / 13) * 12
+
+    # create the data frame with the movie data in it
+    dfMovies = pd.read_csv("files/Libary.csv")
 
     # create frames
     frmHome = Frame(window, height=mainHeight, width=mainWidth)
@@ -473,8 +485,8 @@ def SearchCreate():
     global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier, topWidth, mainWidth, topHeight, mainHeight, imgMagGlass, imgDownARRow, imgSRTDownArrow, imgSRTSearch, entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types
     # create frames
     frmSearchTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
-    frmSearch = Frame(window, width=mainWidth, height=mainHeight)
-
+    frmSearch = Frame(window, width=mainWidth, height=mainHeight) # clears old results
+    
     types = GetTypes()
     selSRTType = StringVar()
 
@@ -566,16 +578,157 @@ def ClearSearchTop():
 
 
 def SearchLibary():
-    global entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType
-    Length = entSRTLength.get()
-    Type = selSRTType.get()
-    Year = entSRTYear.get()
-    Genre = entSRTGenre
-    Title = entSRTTitle
+    global window, dfMovies, imgSmurf, frmSearch, entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, frmSearch, lblMBTitle, movImage, lblMBCover
+    # get the input from the entry boxes
+    
+    movLength = entSRTLength.get()
+    movType = selSRTType.get()
+    movYear = entSRTYear.get()
+    movGenre = entSRTGenre.get()
+    movTitle = entSRTTitle.get()
+
+    # clear other searches
+    try:
+        frmSearch.grid_forget()
+    except:
+        pass
+    frmSearch = Frame(window, width=mainWidth, height=mainHeight) # clears old results
+    
+    
+
+    # run the function to sort the movies by the criteria 
+    movieSort = SearchSort(movTitle,movGenre,movType,movLength,movYear)
+    
+
+    for loc in range(2):
+        FillScreenMovies(movieSort[loc][0], frmSearch)
+    frmSearch.grid()
+    SearchLoad()
+    
 
 
+def FillScreenMovies(selMovie, frm):
+    global dfMovies, multiplier, frmMovieBox, mov, lblMBTitle, frmSearch, imgOzTheGreatandPowerful, imgTheWizardofOz
+    global baseSize,multiplier, imgLGLeftArrow, imgLGRightArrow, frmLogin, localIcon,window, space, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgRightArrow, imgLeftArrow
+   
+    frmMovieBox = Frame(frm, width=mainWidth, height=mainHeight/4, highlightbackground="black", highlightthickness=2)
+    frmMovieBox.pack()
+    RefreshImageFile()
+    GlobalImageFile(selMovie)
+    if 'Shrek' == selMovie:
+        mov = imgShrek
+    elif 'Rise Of The Guardians' == selMovie:
+        mov = imgRiseOfTheGuardians
+    elif 'Shrek 2' == selMovie:
+        mov = imgShrek2
+    elif 'Shrek the Third' == selMovie:
+        mov = imgShrektheThird
+    elif 'The Wizard of Oz' == selMovie:
+        mov = imgTheWizardofOz
+    elif 'Journey Back to Oz' == selMovie:
+        mov = imgJourneyBacktoOz
+    elif 'Oz The Great and Powerful' == selMovie:
+        mov = imgOzTheGreatandPowerful
+    elif 'Return to Oz' == selMovie:
+        mov = imgReturntoOz
+    elif 'Back to the Future' == selMovie:
+        mov = imgBacktotheFuture
+    elif 'Back to the Future Part II' == selMovie:
+        mov = imgBacktotheFuturePartII
+    elif 'Back to the Future Part III' == selMovie:
+        mov = imgBacktotheFuturePartIII
+    elif 'Journey to the Center of the Earth' == selMovie:
+        mov = imgJourneytotheCenteroftheEarth
+    elif 'Journey 2 The Mysterious Island' == selMovie:
+        mov = imgJourney2TheMysteriousIsland
+    elif 'Halloween' == selMovie:
+        mov = imgHalloween
+    elif 'Halloween II' == selMovie:
+        mov = imgHalloweenII
+    elif 'Halloween III Season of the Witch' == selMovie:
+        mov = imgHalloweenIIISeasonoftheWitch
+    elif 'Halloween 4 The Return of Michael Myers' == selMovie:
+        mov = imgHalloween4TheReturnofMichaelMyers
+    elif 'Halloween 5 The Revenge of Michael Myers' == selMovie:
+        mov = imgHalloween5TheRevengeofMichaelMyers
+    elif 'Halloween The Curse of Michael Myers' == selMovie:
+        mov = imgHalloweenTheCurseofMichaelMyers
+    elif 'Halloween H20 20 Years Later' == selMovie:
+        mov = imgHalloweenH2020YearsLater
+    elif 'Halloween Resurrection' == selMovie:
+        mov = imgHalloweenResurrection
+    elif 'Halloween(2018)' == selMovie:
+        mov = imgHalloween2018
+    elif 'Halloween Kills' == selMovie:
+        mov = imgHalloweenKills
+    elif 'Halloween Ends' == selMovie:
+        mov = imgHalloweenEnds
+    elif 'Spider-Man' == selMovie:
+        mov = imgSpiderMan
+    elif 'Spider-Man 2' == selMovie:
+        mov = imgSpiderMan2
+    elif 'Spider-Man 3' == selMovie:
+        mov = imgSpiderMan3
+    elif 'The Amazing Spider-Man' == selMovie:
+        mov = imgTheAmazingSpiderMan
+    elif 'The Amazing Spider-Man 2' == selMovie:
+        mov = imgTheAmazingSpiderMan2
+    
+    
+    mov = mov.subsample(multiplier*3)
+    
+    lblMBTitle = Label(frmMovieBox, text=selMovie)
+    ChangeSize(lblMBTitle, 'Helvetica bold', int(baseSize/2))
+    lblMBTitle.place(relx=0.08, rely=0.1, anchor="center")
+
+    
+    #Create the button with the logo
+    lblMBCover = Label(frmMovieBox,image=mov, highlightthickness = 0, highlightbackground="black")
+    lblMBCover.place(relx=0.08, rely=0.58,anchor="center") # place the button based on the section
+
+    # Create button to view the show info
+    btnMBView = Button(frmMovieBox, text="VIEW", command= lambda selMovie = selMovie :ShowInfoCreate(selMovie))
+    ChangeSize(btnMBView, 'Helvetica bold', int(baseSize*2.8))
+    btnMBView.place(relx=0.47, rely=0.5, anchor="center")
+
+    # create button to add to watch later
+    btnMBWatch = Button(frmMovieBox, text="Watch Later", command= lambda selMovie = selMovie :ShowInfoCreate(selMovie))
+    ChangeSize(btnMBWatch, 'Helvetica bold', int(baseSize*2.8))
+    btnMBWatch.place(relx=0.8, rely=0.5, anchor="center")
 
 
+    
+def GlobalImageFile(selMovie):
+    global imgShrek, imgRiseOfTheGuardians, imgShrek2, imgShrektheThird, imgTheWizardofOz, imgJourneyBacktoOz, imgOzTheGreatandPowerful, imgReturntoOz, imgBacktotheFuture, imgBacktotheFuturePartII, imgBacktotheFuturePartIII, imgJourneytotheCenteroftheEarth, imgJourney2TheMysteriousIsland, imgHalloween, imgHalloweenII, imgHalloweenIIISeasonoftheWitch, imgHalloween4TheReturnofMichaelMyers, imgHalloween5TheRevengeofMichaelMyers, imgHalloweenTheCurseofMichaelMyers, imgHalloweenH2020YearsLater, imgHalloweenResurrection, imgHalloween2018, imgHalloweenKills, imgHalloweenEnds, imgSpiderMan, imgSpiderMan2, imgSpiderMan3, imgTheAmazingSpiderMan, imgTheAmazingSpiderMan2
+    imgShrek = PhotoImage(file='Movie Covers/Shrek.png')
+    imgRiseOfTheGuardians = PhotoImage(file='Movie Covers/Rise of the Guardians.png')
+    imgShrek2 = PhotoImage(file='Movie Covers/Shrek 2.png')
+    imgShrektheThird = PhotoImage(file='Movie Covers/Shrek the Third.png')
+    imgTheWizardofOz = PhotoImage(file='Movie Covers/The Wizard of Oz.png')
+    imgJourneyBacktoOz = PhotoImage(file='Movie Covers/Journey Back to Oz.png')
+    imgOzTheGreatandPowerful = PhotoImage(file='Movie Covers/Oz The Great and Powerful.png')
+    imgReturntoOz = PhotoImage(file='Movie Covers/Return to Oz.png')
+    imgBacktotheFuture = PhotoImage(file='Movie Covers/Back to the Future.png')
+    imgBacktotheFuturePartII = PhotoImage(file='Movie Covers/Back to the Future Part II.png')
+    imgBacktotheFuturePartIII = PhotoImage(file='Movie Covers/Back to the Future Part III.png')
+    imgJourneytotheCenteroftheEarth = PhotoImage(file='Movie Covers/Journey to the Center of the Earth.png')
+    imgJourney2TheMysteriousIsland = PhotoImage(file='Movie Covers/Journey 2 The Mysterious Island.png')
+    imgHalloween = PhotoImage(file='Movie Covers/Halloween.png')
+    imgHalloweenII = PhotoImage(file='Movie Covers/Halloween II.png')
+    imgHalloweenIIISeasonoftheWitch = PhotoImage(file='Movie Covers/Halloween III Season of the Witch.png')
+    imgHalloween4TheReturnofMichaelMyers = PhotoImage(file='Movie Covers/Halloween 4 The Return of Michael Myers.png')
+    imgHalloween5TheRevengeofMichaelMyers = PhotoImage(file='Movie Covers/Halloween 5 The Revenge of Michael Myers.png')
+    imgHalloweenTheCurseofMichaelMyers = PhotoImage(file='Movie Covers/Halloween The Curse of Michael Myers.png')
+    imgHalloweenH2020YearsLater = PhotoImage(file='Movie Covers/Halloween H20 20 Years Later.png')
+    imgHalloweenResurrection = PhotoImage(file='Movie Covers/Halloween Resurrection.png')
+    imgHalloween2018 = PhotoImage(file='Movie Covers/Halloween(2018).png')
+    imgHalloweenKills = PhotoImage(file='Movie Covers/Halloween Kills.png')
+    imgHalloweenEnds = PhotoImage(file='Movie Covers/Halloween Ends.png')
+    imgSpiderMan = PhotoImage(file='Movie Covers/Spider-Man.png')
+    imgSpiderMan2 = PhotoImage(file='Movie Covers/Spider-Man 2.png')
+    imgSpiderMan3 = PhotoImage(file='Movie Covers/Spider-Man 3.png')
+    imgTheAmazingSpiderMan = PhotoImage(file='Movie Covers/The Amazing Spider-Man.png')
+    imgTheAmazingSpiderMan2 = PhotoImage(file='Movie Covers/The Amazing Spider-Man 2.png')
 
 def ReviewCreate():
     print("hi")
@@ -743,11 +896,79 @@ def WatchLaterLoad():
     ClearScreens()
 
 def AddShowLoad():
-    global frmSearchTop, frmSearch, frmHome, frmAddShow, frmAddShowTop, frmHomeTop
+    global frmAddShow, frmAddShowTop
     # clear previous screens
     ClearScreens()
 
-    # load new screen
+    # load new screens
     frmAddShowTop.grid(column=1,row=0,sticky="NE")
     frmAddShow.grid(column=1,row=1,sticky="NE")
+
+def ShowInfoCreate(selMovie):
+    global dfMovies, window, mainHeight, mainWidth, topHeight, topWidth, frmShowInfoTop, frmShowInfo, multiplier, baseSize, imgSICover
+    # create the frames
+    frmShowInfoTop = Frame(window,highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
+    frmShowInfo = Frame(window, width=mainWidth, height=mainHeight)
+
+    # collect the data on the movie 
+    row = dfMovies.loc[lambda dfMovies: dfMovies["Title"] == selMovie]
+    showTitle = row.iloc[0,0]
+    showFile = row.iloc[0,1]
+    showGenre = (row.iloc[0,2]).replace("/","\n")
+    showType = row.iloc[0,3]
+    showLength = str(row.iloc[0,4])
+    showYear = str(row.iloc[0,5])
+    
+    
+
+    lblSITTitle = Label(frmShowInfoTop, text="SHOW INFO")
+    ChangeSize(lblSITTitle, 'Helvetica bold', int(baseSize*1.5))
+    lblSITTitle.place(relx=0.05, rely=0.5, anchor="w")
+
+    lblSITIcon = Label(frmShowInfoTop, text="Add Camera icon")
+    lblSITIcon.place(relx=0.95, rely=0.5, anchor="e")
+
+    # add elements on the main part of the screen
+    lblSITitle = Label(frmShowInfo, text=showTitle)
+    ChangeSize(lblSITitle, 'Helvetica bold', int(baseSize*3))
+    lblSITitle.place(relx=0.5, rely=0.1, anchor="center")
+    
+        # save image and resize
+    imgSICover = (PhotoImage(file="Movie Covers/" + showFile )).subsample(int(multiplier/1.5))
+    
+    lblSICover = Label(frmShowInfo, image=imgSICover)
+    lblSICover.place(relx=0.001, rely=0.5, anchor="w")
+
+    # add info about movie
+    lblSIYear = Label(frmShowInfo, text="   YEAR   \n\n" + showYear, borderwidth = 2, relief="solid", width=int(mainWidth/130))
+    ChangeSize(lblSIYear, 'Helvetica bold', int(baseSize*1.7))
+    lblSIYear.place(relx=0.55, rely=0.4, anchor="se")
+
+    lblSILength = Label(frmShowInfo, text="LENGTH\n\n" + showLength, borderwidth = 2, relief="solid", width=int(mainWidth/130))
+    ChangeSize(lblSILength, 'Helvetica bold', int(baseSize*1.7))
+    lblSILength.place(relx=0.55, rely=0.4, anchor="sw")
+
+    lblSIGenre = Label(frmShowInfo, text="  GENRE \n\n" + showGenre, borderwidth = 2, relief="solid", width=int(mainWidth/130))
+    ChangeSize(lblSIGenre, 'Helvetica bold', int(baseSize*1.7))
+    lblSIGenre.place(relx=0.55, rely=0.4, anchor="ne")
+
+    lblSIType = Label(frmShowInfo, text="  TYPE   \n\n" + showType + "\n", borderwidth = 2, relief="solid", width=int(mainWidth/130))
+    ChangeSize(lblSIType, 'Helvetica bold', int(baseSize*1.7))
+    lblSIType.place(relx=0.55, rely=0.4, anchor="nw")
+
+    
+
+    ShowInfoLoad()
+
+def ShowInfoLoad():
+    global frmShowInfoTop, frmShowInfo
+    # clear previous screens
+    ClearScreens()
+
+    # load new screens
+    frmShowInfoTop.grid(column=1,row=0,sticky="NE")
+    frmShowInfo.grid(column=1,row=1,sticky="NE")
+    
+    
+    
 
