@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 13
-last updated: 18/08/23
+Version 14
+last updated: 30/08/23
 '''
 
 
@@ -25,7 +25,7 @@ import matplotlib as plt
 
 
 def GetImages():
-    global imgPlus,imgEmpLogo,imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass, imgMenuPlus,imgRightArrow, imgLeftArrow, imgEmptyCover, imgDownArrow, imgUpArrow
+    global imgPlus,imgEmpLogo,imgLoading, imgRefresh, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass, imgMenuPlus,imgRightArrow, imgLeftArrow, imgEmptyCover, imgDownArrow, imgUpArrow
     imgPlus = PhotoImage(file="plus.png")
     imgEmpLogo = PhotoImage(file="empty_logo.png")
 
@@ -57,7 +57,11 @@ def GetImages():
     imgDownArrow = PhotoImage(file="arrow Down.png")
     imgUpArrow = PhotoImage(file="arrow Up.png")
 
+    imgLoading = PhotoImage(file="Menu/loading.gif")
+
     imgEmptyCover = PhotoImage(file="Movie Covers/Empty Cover.png")
+
+    imgRefresh = PhotoImage(file="refresh.png")
 
 
 #create Exit bar
@@ -69,7 +73,7 @@ def ExitCreate(window):
     window.config(menu=menuBar)
 
 def InitiateFrames():
-    global frmLogin, frmAccountLogin, frmMovieBox, frmAddAccount, frmSearchTop, frmSearch, frmShowInfo, frmShowInfoTop, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
+    global frmLogin, frmMatchScroll, frmAccountLogin, frmMovieBox, frmAddAccount, frmSearchTop, frmSearch, frmShowInfo, frmShowInfoTop, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
     frmLogin = ""
     frmAccountLogin = ""
     frmAddAccount = ""
@@ -90,11 +94,11 @@ def InitiateFrames():
     frmShowInfo = ""
     frmShowInfoTop = ""
     frmMovieBox = ""
-
+    frmMatchScroll = ""
 
 def ClearScreens():
-    global frmLogin ,frmAccountLogin, frmSearchTop, frmSearch, frmShowInfo, frmShowInfoTop, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
-    frames = [frmLogin ,frmMovieBox, frmAccountLogin, frmAddAccount, frmSearchTop, frmSearch, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow, frmShowInfo, frmShowInfoTop]
+    global frmLogin ,frmAccountLogin, frmMatchScroll, frmSearchTop, frmSearch, frmShowInfo, frmShowInfoTop, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow
+    frames = [frmLogin ,frmMatchScroll, frmMovieBox, frmAccountLogin, frmAddAccount, frmSearchTop, frmSearch, frmHomeTop, frmHome, frmReviewTop, frmReview, frmMatchTop, frmMatch, frmWatchLaterTop, frmWatchLater, frmAddShowTop, frmAddShow, frmShowInfo, frmShowInfoTop]
     for frame in frames:
         try:
             frame.grid_forget()
@@ -334,6 +338,8 @@ def AddAccountLoad():
     global frmAddAccount,frmLogin
     #forget the other screens that could be on screen
     ClearScreens()
+
+    AddAccountCreate()
     #load the Login screen
     frmAddAccount.grid()
 
@@ -381,6 +387,8 @@ def AccountLoginLoad(accountUsername, accountPassword, accountIcon):
     # forget previous frames
     ClearScreens()
 
+    AccountLoginCreate()
+    
     imgALLogo = accountIcon
 
     # configure the logo with the users logo
@@ -477,16 +485,21 @@ def HomeCreate(recLoc, highLoc):
     HomeRec(1)
     HomeHigh(1)
 
-    HomeLoad()
+    CreateMenus()
 
 
 def HomeRec(recLoc):
     global dfMovies, cov, frmHomeRec, mainWidth, mainHeight
+
     
     dfRec = ((dfMovies[len(dfMovies)-20:]).iloc[::-1]).reset_index()
     print(dfRec)
-    frmHomeRec = Frame(frmHome, width=mainWidth, height= int(mainHeight/2), bg="Black")
+    frmHomeRec = Frame(frmHome, width=mainWidth, height= int(mainHeight/2))
     frmHomeRec.grid(row=1, column=1)
+
+    lblHORecent = Label(frmHomeRec, text="Recently Added")
+    ChangeSize(lblHORecent, 'Helvetica bold', int(baseSize))
+    lblHORecent.place(relx=0.05, rely=0,anchor="nw")
 
     for index, row in dfRec.iterrows(): # loop through each row of the data
         title = row["Title"]
@@ -522,9 +535,12 @@ def HomeHigh(highLoc):
 
     GetAverageRating()
 
-    frmHomeHigh = Frame(frmHome, width=mainWidth, height= int(mainHeight/2), bg="Black")
-    frmHomeHigh.grid(row=2, column=2)
+    frmHomeHigh = Frame(frmHome, width=mainWidth, height= int(mainHeight/2))
+    frmHomeHigh.grid(row=2, column=1)
 
+    lblHOHigh = Label(frmHomeHigh, text="Highly Rated")
+    ChangeSize(lblHOHigh, 'Helvetica bold', int(baseSize))
+    lblHOHigh.place(relx=0.05, rely=0,anchor="nw")
 
     dfHigh = dfMovies.sort_values("Rating")
     dfHigh = dfHigh[(len(dfHigh)) - 20:]
@@ -532,12 +548,13 @@ def HomeHigh(highLoc):
     for index, row in dfHigh.iterrows(): # loop through each row of the data
         title = row["Title"]
         cover = (PhotoImage(file="Movie Covers/" +title + ".png"))
-        HomeRecPlace(title, index, cover, highLoc)
+        HomeHighPlace(title, index, cover, highLoc)
     
 
 def HomeHighPlace(title, index, cover, highLoc):
-    global frmHomeHigh
+    global frmHomeHigh, imgRightArrow, imgLeftArrow, cov, imgHOHLeftArrow, imgHOHRightArrow
 
+    page = ((index // 5) + 1)
     if page == highLoc:
         cov = cover.subsample(int(multiplier*1.7))
         btnHOHImg = Button(frmHomeHigh, image=cov, text="Hi")
@@ -550,12 +567,12 @@ def HomeHighPlace(title, index, cover, highLoc):
     imgHOHRightArrow = imgRightArrow.subsample(multiplier)
 
     if highLoc != 1:
-        btnHOHArrowLeft = Button(frmHomeHigh, image=imgHOLeftArrow, command = lambda highLoc = recLoc: HomeHigh(highLoc-1))
+        btnHOHArrowLeft = Button(frmHomeHigh, image=imgHOHLeftArrow, command = lambda highLoc = highLoc: HomeHigh(highLoc-1))
         btnHOHArrowLeft.place(relx=0.04, rely=0.5, anchor = "center")
 
     if highLoc != 4:
-        btnHOArrowRight = Button(frmHomeHigh, image=imgHORightArrow, command = lambda highLoc = recLoc: HomeHigh(highLoc+1))
-        btnHOArrowRight.place(relx=0.96, rely=0.5, anchor = "center")
+        btnHOHArrowRight = Button(frmHomeHigh, image=imgHOHRightArrow, command = lambda highLoc = highLoc: HomeHigh(highLoc+1))
+        btnHOHArrowRight.place(relx=0.96, rely=0.5, anchor = "center")
 
     
 
@@ -578,6 +595,7 @@ def GetAverageRating():
         score = 0
         count = 0
         for name in users:
+            print("\n\n\n", users)
             dfAccount = pd.read_csv("User files/" + name + ".csv")
             for indexAcc, rowAcc in dfAccount.iterrows(): # loop through each row of the data
                 title = rowAcc["Title"]
@@ -596,19 +614,21 @@ def GetAverageRating():
     dfMovies.to_csv("Files/Libary.CSV", index=False)
         
         
-        
+def CreateMenus():
+    # create other screens
+    DropDownGenre()
+    SearchCreate()
+    ReviewCreate()
+    MatchCreate()
+    WatchLaterCreate()
+    AddShowCreate()
+    HomeLoad()
 
 def HomeLoad():
     global frmAccountLogin, frmBar, frmHome, multiplier, frmHomeTop
     # forget previous screens
     ClearScreens()
 
-    # create other screens
-    SearchCreate()
-    ReviewCreate()
-    MatchCreate()
-    WatchLaterCreate()
-    AddShowCreate()
 
     #display the side bar and home screen
     frmBar.grid(column=0,row=0,rowspan=2,sticky="NW")
@@ -617,7 +637,7 @@ def HomeLoad():
 
 
 def SearchCreate():
-    global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier, topWidth, mainWidth, topHeight, mainHeight, imgMagGlass, imgDownARRow, imgSRTDownArrow, imgSRTSearch, entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types
+    global window, space,varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier, topWidth, mainWidth, topHeight, mainHeight, imgMagGlass, imgDownARRow, imgSRTDownArrow, imgSRTSearch, entSRTLength, dropSRTType, entSRTYear, menuSRTGenre, entSRTTitle, selSRTType, types
     # create frames
     frmSearchTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
     frmSearch = Frame(window, width=mainWidth, height=mainHeight) # clears old results
@@ -670,9 +690,16 @@ def SearchCreate():
     ChangeSize(entSRTYear, 'Helvetica bold', int(baseSize / 1.3))
     entSRTYear.place(relx=0.45, rely=0.9, anchor="s")
 
-    entSRTGenre = Entry(frmSearchTop, width=int(30/multiplier))
-    ChangeSize(entSRTGenre, 'Helvetica bold', int(baseSize / 1.3))
-    entSRTGenre.place(relx=0.58, rely=0.9, anchor="s")
+    menuSRTGenre = Menubutton(frmSearchTop,text="Select Genre", relief=RAISED, width=int(30/multiplier))
+    ChangeSize(menuSRTGenre, 'Helvetica bold', int(baseSize / 1.3))
+    menuSRTGenre.place(relx=0.58, rely=0.9, anchor="s")
+
+    menuSRTGenre.menu = Menu(menuSRTGenre, tearoff=0)
+    menuSRTGenre["menu"] = menuSRTGenre.menu
+
+    for loc in range(len(varList)):
+        menuSRTGenre.menu.add_checkbutton(label=genreList[loc], variable=varList[loc])
+
 
     entSRTTitle = Entry(frmSearchTop, width=int(37/multiplier))
     ChangeSize(entSRTTitle, 'Helvetica bold', int(baseSize / 1.3))
@@ -697,11 +724,11 @@ def SearchCreate():
 
 
 def ClearSearchTop():
-    global entSRTLength, dropSRTType, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop, mainHeight
+    global entSRTLength, dropSRTType, entSRTYear, menuSRTGenre, entSRTTitle, selSRTType, types, frmSearchTop, mainHeight
     # clear the entries
     entSRTLength.delete(0,END)
     entSRTYear.delete(0,END)
-    entSRTGenre.delete(0,END)
+    DropDownGenre()
     entSRTTitle.delete(0,END)
 
     dropSRTType.place_forget()
@@ -711,6 +738,18 @@ def ClearSearchTop():
     dropSRTType.config(compound='right', image=imgSRTDownArrow, width=baseSize * 5)
     dropSRTType.place(relx=0.35, rely=0.95, anchor="s")
 
+    menuSRTGenre = Menubutton(frmSearchTop,text="Select Genre", relief=RAISED, width=int(30/multiplier))
+    ChangeSize(menuSRTGenre, 'Helvetica bold', int(baseSize / 1.3))
+    menuSRTGenre.place(relx=0.58, rely=0.9, anchor="s")
+
+    menuSRTGenre.menu = Menu(menuSRTGenre, tearoff=0)
+    menuSRTGenre["menu"] = menuSRTGenre.menu
+
+    for loc in range(len(varList)):
+        menuSRTGenre.menu.add_checkbutton(label=genreList[loc], variable=varList[loc])
+
+
+
 
 def SearchLibary():
     global window, frmMovieBox, scrSearch, dfMovies, imgSmurf, frmSearch, entSRTLength, entSRTYear, entSRTGenre, entSRTTitle, selSRTType, frmSearch, lblMBTitle, movImage, lblMBCover
@@ -719,7 +758,7 @@ def SearchLibary():
     movLength = entSRTLength.get()
     movType = selSRTType.get()
     movYear = entSRTYear.get()
-    movGenre = entSRTGenre.get()
+    movGenre = GetGenre()
     movTitle = entSRTTitle.get()
 
     # clear other searches
@@ -758,7 +797,16 @@ def SearchLibary():
         FillScreenMovies(movieSort[loc][0], frmSearchScroll)
         SearchLoad()
     
+def GetGenre():
+    global varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes
+    genre = ""
+    for loc in range(len(varList)):
+        if varList[loc].get() == True:
+            genre += genreList[loc] + "/"
 
+    # this is error
+    genre = genre[:-1]
+    return genre 
 
 def FillScreenMovies(selMovie, frm):
     global dfMovies, multiplier, scrSearch, frmMovieBox, mov, lblMBTitle, frmSearch, imgOzTheGreatandPowerful, imgTheWizardofOz
@@ -887,37 +935,41 @@ def ReviewCreate():
     print("hi")
 
 def MatchCreate():
-    global dfMovies, dfUser
-    
-    dfMovieTest = pd.read_csv("Files/dfMovieTestFrame.CSV")
+    global dfMovies, dfUser, multiplier, window, frmMatch, frmMatchTop, imgRefresh, imgMATRefresh
 
-    
-    for indexM, rowM in dfMovies.iterrows(): # loop through each row of the data
-        dfGenre = pd.read_csv("Files/Genre.CSV")
-        inside = False
-        for indexU, rowU in dfUser.iterrows(): # loop through each row of the data 
-            if rowU["Title"] == rowM["Title"]:
-                inside = True
+    frmMatch = Frame(window, width=mainWidth, height=mainHeight)
+    frmMatchTop = Frame(window, width=topWidth, height=topHeight, highlightbackground="black", highlightthickness=1)
 
-        if inside == False:
-            try:
-                gen = rowM["Genre"].split("/")
-            except:
-                gen = [rowM["Genre"]]
-            for item in gen:
-                print(gen)
-                print(item)
-                dfGenre.at[0, item] = 1
-            print(dfGenre)
-            genre = (str(dfGenre.to_numpy().flatten())).strip("[").strip("]")
-            print(genre, "genre")
-            
-            dfTemp = pd.DataFrame({"Title":rowM["Title"], "Genre":genre, "Type":rowM["Type"], "Length":rowM["Length"], "Year":rowM["Year"]}, index=[rowM["Title"]])
-            dfMovieTest = pd.concat([dfMovieTest, dfTemp ])
-    dfMovieTest = dfMovieTest.reset_index(drop=True)
+    MatchMovies()
 
-    NeuralNetwork(dfUser, dfMovieTest)
-    
+    imgMATRefresh = imgRefresh.subsample(multiplier)
+
+    btnMATRefresh = Button(frmMatchTop, image=imgMATRefresh, command= lambda:MatchMovies() + MatchLoad())
+    btnMATRefresh.place(relx=0.75, rely=0.5, anchor="center")
+
+
+
+def ScrollBar(frm):
+    global mainWidth, mainHeight
+    # create a canvas for scroll bar
+    can = Canvas(frm, width=int(mainWidth-30), height=mainHeight)
+    can.pack(side=LEFT, fill=BOTH, expand=1)
+
+    # add scroll bar
+    scr = ttk.Scrollbar(frm, orient=VERTICAL, command=can.yview)
+    scr.pack(side=RIGHT, fill=Y)
+
+    #configure the canvas
+    can.configure(yscrollcommand=scr.set)
+    can.bind("<Configure>", lambda e:can.configure(scrollregion=can.bbox("all")))
+
+    # create another frame inside canvas
+    frmScroll = Frame(can, width=mainWidth-30, height=mainHeight)
+
+    # add that new frame to a window in the canvas
+    can.create_window((0,0), window=frmScroll, anchor="nw")
+
+    return frmScroll
 
     
 
@@ -925,7 +977,7 @@ def WatchLaterCreate():
     print("hi")
 
 def AddShowCreate():
-    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, entASRating, selASType, entASTitle, entASGenre, dropASType, entASLength, entASYear, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
+    global varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes,window, varList, genreList, frmAddShowTop, frmAddShow, multiplier, baseSize, entASRating, selASType, entASTitle, entASGenre, dropASType, entASLength, entASYear, entASFile, lblASCover, imgPlus, topSpace, bottomSpace, imgASTPlus, topWidth, mainWidth, topHeight, mainHeight, imgEmptyCover, imgDownArrow, imgASDownArrow
     # create the frames
     frmAddShowTop = Frame(window, highlightbackground="black", highlightthickness=1, width=topWidth, height=topHeight)
     frmAddShow = Frame(window, width=mainWidth, height=mainHeight)
@@ -997,9 +1049,19 @@ def AddShowCreate():
     dropASType.config(compound='right', image=imgASDownArrow, width=baseSize*11)
     dropASType.image=imgASDownArrow
 
-    entASGenre = Entry(frmAddShow,width=int(baseSize/2))
-    ChangeSize(entASGenre, 'Helvetica bold', int(baseSize*1.2))
-    entASGenre.place(relx=0.73, rely=0.36, anchor="center")
+
+    menuASGenre = Menubutton(frmAddShow, text="Select Genre", relief=RAISED, width=int(baseSize/2))
+    ChangeSize(menuASGenre, 'Helvetica bold', int(baseSize*1.2))
+    menuASGenre.place(relx=0.73, rely=0.36, anchor="center")
+
+    menuASGenre.menu = Menu(menuASGenre, tearoff=0)
+    menuASGenre["menu"] = menuASGenre.menu
+
+    for loc in range(len(varList)):
+        menuASGenre.menu.add_checkbutton(label=genreList[loc], variable=varList[loc])
+
+    
+
 
     entASLength = Entry(frmAddShow,width=int(baseSize/2))
     ChangeSize(entASLength, 'Helvetica bold', int(baseSize*1.2))
@@ -1021,6 +1083,39 @@ def AddShowCreate():
     ChangeSize(btnASAdd, 'Helvetica bold', int(baseSize*1.2))
     btnASAdd.place(relx=0.5, rely=0.9, anchor="center")
 
+
+def DropDownGenre():
+    global varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes
+
+    varAct = IntVar()
+    varAdv = IntVar()
+    varAni = IntVar()
+    varAnime = IntVar()
+    varCom = IntVar()
+    varCri = IntVar()
+    varDar = IntVar()
+    varDra = IntVar()
+    varFam = IntVar()
+    varFan = IntVar()
+    varFic = IntVar()
+    varHor = IntVar()
+    varLeg = IntVar()
+    varMus = IntVar()
+    varMys = IntVar()
+    varNar = IntVar()
+    varRom = IntVar()
+    varRomCom = IntVar()
+    varSci = IntVar()
+    varSla = IntVar()
+    varSpec = IntVar()
+    varThr = IntVar()
+    varWes = IntVar()
+
+    varList = [varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes]
+
+    genreList = ['Action', 'Adventure', 'Animated', 'Anime', 'Comedy', 'Crime Fiction', 'Dark Comedy', 'Drama', 'Family', 'Fantasy', 'Fiction', 'Horror', 'Legal Drama', 'Musical', 'Mystery', 'Narrative', 'Romance', 'Romantic Comedy', 'Science Fiction', 'Slasher', 'Speculative Fiction', 'Thriller', 'Western']
+    
+
 def AddShowConfigure():
     global entASFile, lblASCover, imgMovieCover, multiplier, imgCover
     # collects the file path and swaps any back slashes to forward slashes and removes any ""
@@ -1038,7 +1133,7 @@ def AddShowConfigure():
     lblASCover.config(image=imgCover)
 
 def AddShow():
-    global entASTitle, entASFile, entASGenre, dropASType, entASLength, entASYear, selASType, accountUsername, entASRating
+    global entASTitle, varList, genreList, entASFile, entASGenre, dropASType, entASLength, entASYear, selASType, accountUsernameG, entASRating
     # read from libary file
     libaryDataFrame = pd.read_csv("Files/Libary.CSV")
 
@@ -1046,18 +1141,24 @@ def AddShow():
     # get the name of the image 
     fileName = "Movie Covers/" + entASTitle.get() + ".png"
 
+    filePath = (entASFile.get()).replace("\\", "/").strip('"')
+
     # resize the image to the base size
     imgCover = Image.open(filePath)
     imgCoverResize = imgCover.resize((800,1200))
-    imgCoverResize.save("Movie Covers/" + fileName)
+    imgCoverResize.save(fileName)
+
+
+    genre = GetGenre()
+    
 
     # add new item to the data frame and save to file
-    addDataFrame = pd.DataFrame({"Title":entASTitle.get(), "File":fileName, "Genre":entASGenre.get(), "Type":selASType.get(), "Length":entASLength.get(), "Year":entASYear.get()}, index=[entASTitle.get()])
+    addDataFrame = pd.DataFrame({"Title":entASTitle.get(), "File":fileName, "Genre":genre, "Type":selASType.get(), "Length":entASLength.get(), "Year":entASYear.get()}, index=[entASTitle.get()])
     libaryFile = pd.concat([libaryDataFrame, addDataFrame])
     libaryFile.to_csv("Files/Libary.CSV",index=False)
 
-    userFile = open("User Files/" + accountUsername + ".csv", "a")
-    userFile.write("\n" + entASTitle.get() + "," + entASGenre.get() + "," + selASType.get() + "," + entASLength.get() + "," + entASYear.get()) 
+    userFile = open("User Files/" + accountUsernameG + ".csv", "a")
+    userFile.write("\n" + entASTitle.get() + "," + genre + "," + selASType.get() + "," + entASLength.get() + "," + entASYear.get() + "," + entASRating.get()) 
     # return to the home screen
     
     HomeLoad()
@@ -1069,6 +1170,8 @@ def SearchLoad():
     global frmSearchTop, frmSearch, frmHome
     # clear previous screens
     ClearScreens()
+
+    DropDownGenre()
     # load new screen
     frmSearchTop.grid(column=1,row=0,sticky="N")
     frmSearch.grid(column=1,row=1,sticky="NW")
@@ -1078,8 +1181,58 @@ def ReviewLoad():
     ClearScreens()
 
 def MatchLoad():
+    global frmMatch, frmMatchTop, dfMovies, dfUser, window, frmMatch, frmMatchTop, frmLoadingScreen
     # clear previous screens
     ClearScreens()
+    
+    # load new screen
+    frmMatch.grid(column=1, row=1, sticky="NW")
+    frmMatchTop.grid(column=1,row=0,sticky="N")
+
+
+def MatchMovies():
+    global frmMatch, frmMatchTop, dfMovies, dfUser, window, frmMatch, frmMatchTop, frmLoadingScreen, frmMatchScroll, mainHeight, mainWidth
+
+    try:
+        frmMatch.grid_forget()
+    except:
+        pass
+    frmMatch = Frame(window, width=mainWidth, height=mainHeight)
+    
+    # add the movies
+    dfMovieTest = pd.read_csv("Files/dfMovieTestFrame.CSV")
+
+    for indexM, rowM in dfMovies.iterrows(): # loop through each row of the data
+        dfGenre = pd.read_csv("Files/Genre.CSV")
+        inside = False
+        for indexU, rowU in dfUser.iterrows(): # loop through each row of the data 
+            if rowU["Title"] == rowM["Title"]:
+                inside = True
+
+        if inside == False:
+            try:
+                gen = rowM["Genre"].split("/")
+            except:
+                gen = [rowM["Genre"]]
+            for item in gen:
+                print(gen)
+                print(item)
+                dfGenre.at[0, item] = 1
+            print(dfGenre)
+            genre = (str(dfGenre.to_numpy().flatten())).strip("[").strip("]")
+            print(genre, "genre")
+            
+            dfTemp = pd.DataFrame({"Title":rowM["Title"], "Genre":genre, "Type":rowM["Type"], "Length":rowM["Length"], "Year":rowM["Year"]}, index=[rowM["Title"]])
+            dfMovieTest = pd.concat([dfMovieTest, dfTemp ])
+    dfMovieTest = dfMovieTest.reset_index(drop=True)
+
+    arPrediction = NeuralNetwork(dfUser, dfMovieTest)
+
+    frmMatchScroll = ScrollBar(frmMatch)
+        
+    for item in arPrediction:
+        FillScreenMovies(item[1], frmMatchScroll)
+
 
 def WatchLaterLoad():
     # clear previous screens
@@ -1089,6 +1242,8 @@ def AddShowLoad():
     global frmAddShow, frmAddShowTop
     # clear previous screens
     ClearScreens()
+
+    DropDownGenre()
 
     # load new screens
     frmAddShowTop.grid(column=1,row=0,sticky="NE")
@@ -1208,5 +1363,6 @@ def ShowInfoLoad():
     frmShowInfo.grid(column=1,row=1,sticky="NE")
     
     
-    
+
+
 

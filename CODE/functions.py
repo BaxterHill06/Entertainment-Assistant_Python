@@ -3,8 +3,8 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 13
-last updated: 18/08/23
+Version 14
+last updated: 30/08/23
 '''
 
 
@@ -20,6 +20,7 @@ import sklearn
 from sklearn import linear_model
 from sklearn.utils import shuffle
 import csv
+from operator import itemgetter
 
 
 def ScreenSpace(x, y):
@@ -250,10 +251,12 @@ def NeuralNetwork(dfUser, dfTestMovie):
         
         dfUserFix = pd.concat([dfUserFix, dfTemp])
     dfUserFix = dfUserFix.reset_index(drop=True)
-    dfUserFix.to_csv("Files/dfTemp.CSV", index=False)
 
     print(dfUserFix, "df")
 
+    arTrainRating = (np.array(dfUserFix["Rating"])).flatten()
+
+    dfUserFix = dfUserFix.drop(columns=["Rating"])
 
     # Extract the Genre column and convert it to a list of lists
     genre_values = dfUserFix["Genre"].apply(lambda x: list(map(int, x.split()))).tolist()
@@ -267,21 +270,12 @@ def NeuralNetwork(dfUser, dfTestMovie):
     # Insert the Genre values back into the array
     arTrainData = np.concatenate((genre_values, arTrainData), axis=1)
 
-    
-    arTrainRating = (np.array(dfUserFix["Rating"])).flatten()
 
     print(np.shape(arTrainData))
     print(np.shape(arTrainRating))
 
     print(arTrainData)
     print(arTrainRating)
-
-    trainData, testData, trainRating, testRating = sklearn.model_selection.train_test_split(arTrainData, arTrainRating, test_size=0.1)
-
-    #trainRating = trainRating.flatten()
-
-    
-    
 
     """
     linear = linear_model.LinearRegression()
@@ -293,23 +287,18 @@ def NeuralNetwork(dfUser, dfTestMovie):
     print(acc)
     """
     
-    print("\n\n\n\n\n" , trainData)
+    #print("\n\n\n\n\n" , trainData)
         
     # Convert trainData to numpy.float32
-    trainData = trainData.astype(np.float32)
+    trainData = arTrainData.astype(np.float32)
 
     # Convert trainRating to numpy.int32
-    trainRating = trainRating.astype(np.int32)
+    trainRating = arTrainRating.astype(np.int32)
 
-    # Convert trainData to numpy.float32
-    testData = testData.astype(np.float32)
-
-    # Convert trainRating to numpy.int32
-    testRating = testRating.astype(np.int32)
 
     model = keras.Sequential([
     keras.layers.Input(shape=(trainData.shape[1],)),  # Input layer
-    keras.layers.Dense(2000, activation="relu"),       # Hidden layer 1
+    keras.layers.Dense(20, activation="relu"),       # Hidden layer 1
     keras.layers.Dropout(0.3),
     keras.layers.Dense(1, activation="linear")        # Output layer
     ])
@@ -322,20 +311,72 @@ def NeuralNetwork(dfUser, dfTestMovie):
     # Train the model
     model.fit(trainData, trainRating, epochs=100, batch_size=32, validation_split=0.2)
 
+    print("\n\n\n\n\n" , dfTestMovie)
+    """
     prediction = model.predict(testData)
     print(prediction)
-    
-    for i in range(len(prediction)):
-        print(testRating[i], prediction[i-1])
-    
-    
-    
-    
+    """
+
+    arPrediction = NetworkPrediction(model, dfTestMovie)
+
+    return arPrediction
+
+def NetworkPrediction(model, dfTestMovie):
+
+    dfTest = dfTestMovie.drop(columns=["Title"])
+    dfTest = dfTest.replace({"Type": {"Movie": 0, "Tv-Show":1}})
 
 
+    # Extract the Genre column and convert it to a list of lists
+    genre_values = dfTest["Genre"].apply(lambda x: list(map(int, x.split()))).tolist()
+
+    # Convert the DataFrame to a NumPy array
+    arTestData = dfTest.drop("Genre", axis=1).values
+
+    # Make sure the genre_values have the same number of columns as arTrainData
+    genre_values = np.array(genre_values)
+
+    # Insert the Genre values back into the array
+    arTestData = np.concatenate((genre_values, arTestData), axis=1)
+    
+    # Convert trainData to numpy.float32
+    testData = arTestData.astype(np.float32)
+
+    print(testData)
+
+    prediction = model.predict(testData)
+
+    print(dfTestMovie)
+
+    prediction = list(prediction)
+
+    arPrediction = []
+    for loc in range(len(prediction)):
+        print(prediction[loc])
+        arPrediction.append([(float(str(prediction[loc]).strip("[").strip("]"))), dfTestMovie.loc[loc,"Title"]])
+
+    print(arPrediction)
+
+    arPrediction = sorted(arPrediction, key=lambda x:x[0])
+    
+    print(arPrediction)
+    arPrediction.reverse()
+    print(arPrediction)
+    return arPrediction
 
 
+def LoadingScreen(window, multiplier, mainWidth, topWidth, mainHeight, topHeight):
+    frmLoadingScreen = Frame(window, width=mainWidth + topWidth, height=mainHeight + topHeight)
 
+    imgLoading = PhotoImage(file="Menu/loading.gif")
+    imgLSLoading = imgLoading.subsample(multiplier)
+
+    
+    lblLoad = Label(frmLoadingScreen, image=imgLSLoading)
+    lblLoad.place(relx=0.5, rely=0.5, anchor="center")
+
+    frmLoadingScreen.grid()
+    return frmLoadingScreen
 
     
     

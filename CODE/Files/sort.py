@@ -5,6 +5,6 @@ for line in file:
 arr = arr.split(",")
 
 arr.sort()
-print(" ".join(arr).strip("'").strip(" ").strip("\n").replace(" ", ","))
+print(arr)
 print("0," * len(arr))
 
