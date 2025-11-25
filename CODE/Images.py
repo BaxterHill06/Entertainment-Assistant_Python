@@ -4,7 +4,7 @@
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
 Version 5
-last updated: 21/06/23
+last updated: 25/06/23
 '''
 
 from tkinter import *
@@ -16,7 +16,6 @@ def GetImages():
     return (plus, empLogo)
 
 def GatherIcons():
-    icons = ["Joker","Kyle","Mando","Predator","R2","Smurf","Transformer","Yoda","Homer","Hedwing","Grinch","Darth Vader","C-3PO","Black Panther"]
-
+    icons = ["Joker","Kyle","Mando","Predator","R2","Smurf","Transformer","Yoda","Homer","Hedwig","Grinch","Darth Vader","C-3PO","Black Panther"]
 
     return icons
