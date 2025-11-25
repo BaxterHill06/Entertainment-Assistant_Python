@@ -4,7 +4,7 @@
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
 Version 5
-last updated: 20/06/23
+last updated: 21/06/23
 '''
 
 from tkinter import *
@@ -25,7 +25,7 @@ GetImages()
 ExitCreate(window)
 
 #collect screen size to allow for place functions
-space = screenSpace()
+space = ScreenSpace()
 
 
 #create screens

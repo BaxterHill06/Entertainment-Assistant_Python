@@ -4,11 +4,13 @@
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
 Version 5
-last updated: 20/06/23
+last updated: 21/06/23
 '''
+
 
 from tkinter import *
 from Images import *
+from functions import *
 
 def GetImages():
     global plus,empLogo
@@ -59,6 +61,13 @@ def LoginCreate(window,space):
     lblLGAdd.place(relx=0.79, rely=0.76)
     return frmLogin
 
+    # add account logos
+    accountFile = open("UserFile.csv","r")
+
+
+
+
+
 
 
 def LoginLoad(frmLogin):
@@ -88,18 +97,45 @@ def AddAccountCreate(window,space):
     #add dropdown for selection icon
     selAAIcon = StringVar()
     dropAALogo = OptionMenu(frmAddAccount, selAAIcon , *icons,)
-    dropAALogo.config(width=10,height=2)
+    dropAALogo.config(width=13,height=2)
     ChangeSize(dropAALogo,'Helvetica bold', 30)
     dropAALogo.place(relx=0.65, rely=0.15)
     
 
     #add a select button for the icon
-    btnAASelect = Button(frmAddAccount, text="SELECTING", command=IconConfigure)
+    btnAASelect = Button(frmAddAccount, text="SELECT", command=IconConfigure)
     ChangeSize(btnAASelect,'Helvetica bold', 15)
     btnAASelect.place(relx=0.70, rely=0.3)
 
+    #add "create username" label and entry
+    lblAAUsername = Label(frmAddAccount, text="CREATE USERNAME")
+    ChangeSize(lblAAUsername,'Helvetica bold', 30)
+    lblAAUsername.place(relx=0.5,rely=0.43,anchor="center")
 
+    entAAUsername = Entry(frmAddAccount)
+    entAAUsername.config(width=40)
+    ChangeSize(entAAUsername,'Helvetica bold',30)
+    entAAUsername.place(relx=0.5,rely=0.5,anchor="center")
+
+
+
+    #add "create password" label and entry
+    lblAAPassword = Label(frmAddAccount, text="CREATE PASSWORD")
+    ChangeSize(lblAAPassword,'Helvetica bold', 30)
+    lblAAPassword.place(relx=0.5,rely=0.65,anchor="center")
+
+    entAAPassword = Entry(frmAddAccount)
+    entAAPassword.config(width=40)
+    ChangeSize(entAAPassword,'Helvetica bold',30)
+    entAAPassword.place(relx=0.5,rely=0.72,anchor="center")
+
+
+    #add "CREATE" button
+    btnAACreate = Button(frmAddAccount,text="CREATE", command= lambda username=entAAUsername, password=entAAPassword, icon=selAAIcon : CreateAccount(username,password,icon))
+    btnAACreate.config(width=30,heigh=8)
+    btnAACreate.place(relx=0.5, rely=0.9,anchor="center")
     
+
 
 #change the image on screen to the icon selected by the user
 def IconConfigure():
@@ -108,8 +144,6 @@ def IconConfigure():
     iconFile = PhotoImage(file=iconPath)
     lblAALogo.config(image=iconFile)
     
-
-
 
 
 def AddAccountLoad():
