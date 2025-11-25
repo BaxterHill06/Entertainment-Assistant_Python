@@ -3,7 +3,7 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 7
+Version 8
 last updated: 27/06/23
 '''
 
@@ -246,7 +246,7 @@ def AddAccountCreate():
 
     #add dropdown for selection icon
     selAAIcon = StringVar()
-    dropAALogo = OptionMenu(frmAddAccount, selAAIcon , *icons,)
+    dropAALogo = OptionMenu(frmAddAccount, selAAIcon , *icons)
     dropAALogo.config(width=int(13/multiplier),height=int(2/multiplier))
     ChangeSize(dropAALogo,'Helvetica bold', baseSize)
     dropAALogo.place(relx=0.65, rely=0.15, anchor="center")
@@ -323,7 +323,7 @@ def AddAccountLoad():
 
 
 def AccountLoginCreate():
-    global window, space,imgEmpLogo, lblALMessage, frmAccountLogin, lblALLogo,lblALUsername, btnALLogin, entALPassword
+    global window, space, baseSize, imgEmpLogo, lblALMessage, frmAccountLogin, lblALLogo,lblALUsername, btnALLogin, entALPassword
     frmAccountLogin = Frame(window) # create the frame to place elements into
 
     #fill the screen
@@ -335,41 +335,43 @@ def AccountLoginCreate():
 
     # crate name label
     lblALUsername = Label(frmAccountLogin, text="")
-    ChangeSize(lblALUsername,'Helvetica bold', 30)
+    ChangeSize(lblALUsername,'Helvetica bold', baseSize)
     lblALUsername.place(relx=0.5 , rely=0.3, anchor="center")
 
     # create label and entry for password
     lblALPassword = Label(frmAccountLogin,text="ENTER PASSWORD:")
-    ChangeSize(lblALPassword,'Helvetica bold', 60)
+    ChangeSize(lblALPassword,'Helvetica bold', baseSize*2)
     lblALPassword.place(relx=0.5, rely=0.45, anchor="center")
 
     entALPassword = Entry(frmAccountLogin, width=25)
-    ChangeSize(entALPassword, 'Helvetica bold', 50)
+    ChangeSize(entALPassword, 'Helvetica bold', int(baseSize*1.666))
     entALPassword.place(relx=0.5, rely=0.58, anchor="center")
 
     # label to show any errors e.g. wrong password
     lblALMessage = Label(frmAccountLogin, text="", fg="red")
-    ChangeSize(lblALMessage,'Helvetica bold', 30)
+    ChangeSize(lblALMessage,'Helvetica bold', baseSize)
     lblALMessage.place(relx=0.5, rely=0.7, anchor="center")
 
     #create "LOGIN" Button
     btnALLogin = Button(frmAccountLogin,text="LOGIN", height=2, width=15)
-    ChangeSize(btnALLogin, 'Helvetica bold', 30)
+    ChangeSize(btnALLogin, 'Helvetica bold', baseSize)
     btnALLogin.place(relx=0.5, rely=0.8, anchor="center")
 
     # create back button
     btnALBack = Button(frmAccountLogin, command=LoginLoad, text="BACK")
-    ChangeSize(btnALBack, 'Helvetica bold', 30)
+    ChangeSize(btnALBack, 'Helvetica bold', baseSize)
     btnALBack.place(rely=0.95, relx=0.05, anchor='sw')
 
 
 def AccountLoginLoad(accountUsername, accountPassword, accountIcon):
-    global frmAccountLogin, frmLogin,lblALLogo,lblALUsername,btnALLogin, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther
+    global frmAccountLogin, frmLogin,lblALLogo,lblALUsername,btnALLogin, multiplier, imgALLogo, imgSmurf, imgJoker, imgKyle, imgMando, imgPredator, imgR2, imgTransformer, imgYoda, imgHomer, imgHedwig, imgGrinch, imgDarthVader, imgC3PO, imgBlackPanther
     # forget previous frames
     ClearScreens()
 
+    imgALLogo = accountIcon
+
     # configure the logo with the users logo
-    lblALLogo.config(image=accountIcon)
+    lblALLogo.config(image=imgALLogo)
 
     # configure name label
     lblALUsername.config(text=accountUsername)
@@ -393,50 +395,64 @@ def LoginAttempt(accountUsername,accountPassword):
 
 
 def BarCreate():
-    global window, frmBar, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass
-    frmBar = Frame(window,height=400, width = 400) # create side bar frame
+    global window, frmBar, multiplier, imgBook, imgClock, imgExit, imgHeart, imgHouse, imgMagGlass,imgMenuPlus, imgBRBook, imgBRClock, imgBRExit, imgBRHeart, imgBRHouse, imgBRMagGlass, imgBRPlus
+    frmBar = Frame(window, highlightbackground="black", highlightthickness=1) # create side bar frame
+    print(multiplier)
+
+    # adjust icon size based on screen size
+    imgBRMagGlass = imgMagGlass.subsample(multiplier)
+    imgBRHouse = imgHouse.subsample(multiplier)
+    imgBRBook = imgBook.subsample(multiplier)
+    imgBRHeart = imgHeart.subsample(multiplier)
+    imgBRClock = imgClock.subsample(multiplier)
+    imgBRPlus = imgMenuPlus.subsample(multiplier)
+    imgBRExit = imgExit.subsample(multiplier)
+
+
+
+
 
     # create and pack menu buttons
-    btnBRSearch = Button(frmBar, image=imgMagGlass,command=SearchLoad, highlightthickness = 0, bd = 0)
+    btnBRSearch = Button(frmBar, image=imgBRMagGlass,command=SearchLoad, highlightthickness = 0, bd = 0)
     btnBRSearch.pack()
-    btnBRHome = Button(frmBar, image=imgHouse,command=HomeLoad, highlightthickness = 0, bd = 0)
+    btnBRHome = Button(frmBar, image=imgBRHouse,command=HomeLoad, highlightthickness = 0, bd = 0)
     btnBRHome.pack()
-    btnBRReview = Button(frmBar, image=imgBook, command=ReviewLoad, highlightthickness=0, bd=0)
+    btnBRReview = Button(frmBar, image=imgBRBook, command=ReviewLoad, highlightthickness=0, bd=0)
     btnBRReview.pack()
-    btnBRMatch = Button(frmBar, image=imgHeart, command=MatchLoad, highlightthickness=0, bd=0)
+    btnBRMatch = Button(frmBar, image=imgBRHeart, command=MatchLoad, highlightthickness=0, bd=0)
     btnBRMatch.pack()
-    btnBRLater = Button(frmBar, image=imgClock, command=WatchLaterLoad, highlightthickness=0, bd=0)
+    btnBRLater = Button(frmBar, image=imgBRClock, command=WatchLaterLoad, highlightthickness=0, bd=0)
     btnBRLater.pack()
-    btnBRAdd = Button(frmBar, image=imgMenuPlus, command=AddShowLoad, highlightthickness=0, bd=0)
+    btnBRAdd = Button(frmBar, image=imgBRPlus, command=AddShowLoad, highlightthickness=0, bd=0)
     btnBRAdd.pack()
-    btnBRExit = Button(frmBar, image=imgExit, command=LoginLoad, highlightthickness=0, bd=0)
-    btnBRExit.pack(pady=30)
+    btnBRExit = Button(frmBar, image=imgBRExit, command=LoginLoad, highlightthickness=0, bd=0)
+    btnBRExit.pack(ipady=baseSize*1.2 + 10)
 
     HomeCreate()
 
 def HomeCreate():
     global window, frmHome, baseSize, multiplier, bottomSpace, topSpace, frmHomeTop
-    # create frmaes
+    # create frames
     frmHome = Frame(window)
-    frmHomeTop = Frame(window)
+    frmHomeTop = Frame(window, highlightbackground="black", highlightthickness=1)
 
     # create top bar for headings
-    topSpace = ScreenSpace(int(8/multiplier),int(65/multiplier))
+    topSpace = ScreenSpace(int((182/multiplier*7)/11),int((140/multiplier)/15*14))
     ScreenFill(frmHomeTop, topSpace)
 
 
     # create the space needed for the main par of screen and fill for place to work
-    bottomSpace = ScreenSpace(int(8/multiplier),int(7/multiplier))
+    bottomSpace = ScreenSpace(int((182/multiplier*7)/11),int((140/multiplier)/15))
     ScreenFill(frmHome,bottomSpace)
 
     # create sub headings
     lblHORecent = Label(frmHome, text="Recently Added")
-    ChangeSize(lblHORecent, 'Helvetica bold', int(baseSize*0.66))
+    ChangeSize(lblHORecent, 'Helvetica bold', int(baseSize*0.33))
     lblHORecent.place(relx=0.05, rely=0,anchor="nw")
 
     lblHOHigh = Label(frmHome, text="Highly Rated")
-    ChangeSize(lblHOHigh, 'Helvetica bold', int(baseSize*0.66))
-    lblHOHigh.place(relx=0.05, rely=0.5,anchor="nw")
+    ChangeSize(lblHOHigh, 'Helvetica bold', int(baseSize*0.33))
+    lblHOHigh.place(relx=0.05, rely=0.48,anchor="nw")
 
 
     HomeLoad()
@@ -462,7 +478,7 @@ def HomeLoad():
 def SearchCreate():
     global window, space, frmSearch, frmSearchTop, topSpace, bottomSpace, baseSize, multiplier
     # create frames
-    frmSearchTop = Frame(window)
+    frmSearchTop = Frame(window, highlightbackground="black", highlightthickness=1)
     frmSearch = Frame(window)
 
     # fill Screen
@@ -508,9 +524,9 @@ def WatchLaterCreate():
     print("hi")
 
 def AddShowCreate():
-    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, imgPlus, topSpace, bottomSpace
+    global window, frmAddShowTop, frmAddShow, multiplier, baseSize, imgPlus, topSpace, bottomSpace, imgASTPlus
     # create the frames
-    frmAddShowTop = Frame(window)
+    frmAddShowTop = Frame(window, highlightbackground="black", highlightthickness=1)
     frmAddShow = Frame(window)
 
     # fill the screens for place
@@ -518,12 +534,25 @@ def AddShowCreate():
     ScreenFill(frmAddShow, bottomSpace)
 
     #create the elements on the top bar
-    lblASTHeading = Label(frmAddShowTop)
-    ChangeSize(lblASTHeading,'Helvetica bold', int(baseSize * 0.66))
+    lblASTHeading = Label(frmAddShowTop, text="ADD SHOW")
+    ChangeSize(lblASTHeading,'Helvetica bold', int(baseSize*1.7))
+    lblASTHeading.place(relx=0.01, rely=0.06, anchor="nw")
 
-    lblASTLogo = imgPlus.subsample(int(2/multiplier))
+    # change size of image
+    imgASTPlus = imgPlus.subsample(int(13 / multiplier))
+
+    lblASTLogo = Label(frmAddShowTop, image=imgASTPlus)
+    lblASTLogo.place(relx=0.95, rely=0.06, anchor="ne")
 
     # create the elements on screen
+    lblASTitle = Label(frmAddShow, text="Title")
+    ChangeSize(lblASTitle,'Helvetica bold', baseSize)
+    lblASTitle.place(relx=0.5, rely=0.01, anchor="n")
+
+    entASTitle = Entry(frmAddShow)
+    ChangeSize(entASTitle,'Helvetica bold', baseSize)
+    entASTitle.config(width=int(40/multiplier))
+    entASTitle.place(relx=0.5, rely=0.1, anchor="n")
 
 
 
@@ -553,6 +582,6 @@ def AddShowLoad():
     ClearScreens()
 
     # load new screen
-    frmAddShowTop.grid(column=1,row=0,sticky="N")
-    frmAddShow.grid(column=1,row=1,sticky="NW")
+    frmAddShowTop.grid(column=1,row=0,sticky="NE")
+    frmAddShow.grid(column=1,row=1,sticky="NE")
 

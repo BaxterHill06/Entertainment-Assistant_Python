@@ -3,7 +3,7 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 7
+Version 8
 last updated: 27/06/23
 '''
 
@@ -16,7 +16,8 @@ def ScreenSpace(x, y):
     for line in file:
         array.append(int(line.strip("\n")))
 
-    space = "       "*(array[0]-x) + "\n"*(array[1]-y) # create the space acording to the scrren size. -x and -y is to remove screen space for the bar
+    space = " "*(array[0]*7-x) + "\n"*(array[1]-y) # create the space acording to the scrren size. -x and -y is to remove screen space for the bar
+    print(array[1]-y)
     file.close()
     return space
 
@@ -31,7 +32,8 @@ def ChangeSize(item,font,size):
 
 def ItemSize():
     global array
-    multiplyer = int(1/(array[0] / 91))
+    multiplier = int(round(182 / array[0],0))
+    print(multiplier)
     baseSize = int(30 * (array[0] / 91))
 
-    return multiplyer, baseSize
+    return multiplier, baseSize
