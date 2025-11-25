@@ -3,7 +3,7 @@
 ||B |||a |||x |||t |||e |||r ||
 ||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|
-Version 15
+Version 16
 last updated: 19/09/23
 '''
 
@@ -510,7 +510,10 @@ def HomeRec(recLoc):
 
     for index, row in dfRec.iterrows(): # loop through each row of the data
         title = row["Title"]
-        cover = (PhotoImage(file="Movie Covers/" +title + ".png"))
+        try:
+            cover = (PhotoImage(file="Movie Covers/" + title + ".png"))
+        except:
+            cover = (PhotoImage(file="Movie Covers/Empty Cover.png"))
         HomeRecPlace(title, index, cover, recLoc)
 
 def HomeRecPlace(title, index, cover, recLoc):
@@ -554,7 +557,10 @@ def HomeHigh(highLoc):
     print(dfHigh)
     for index, row in dfHigh.iterrows(): # loop through each row of the data
         title = row["Title"]
-        cover = (PhotoImage(file="Movie Covers/" +title + ".png"))
+        try:
+            cover = (PhotoImage(file="Movie Covers/" + title + ".png"))
+        except:
+            cover = (PhotoImage(file="Movie Covers/Empty Cover.png"))
         HomeHighPlace(title, index, cover, highLoc)
     
 
@@ -615,7 +621,7 @@ def GetAverageRating():
         except:
             average = -1
         dfMovies.at[indexMov, "Rating"] = average
-        
+
     print(dfMovies)
 
     dfMovies.to_csv("Files/Libary.CSV", index=False)
@@ -768,7 +774,7 @@ def SearchLibary():
     movYear = entSRTYear.get()
 
     movGenre = GetGenre()
-    
+
     print(movGenre)
     movTitle = entSRTTitle.get()
 
@@ -1109,35 +1115,35 @@ def AddShowCreate():
 
 
 def DropDownGenre():
-    global varList, genreList,varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes
+    global varList, genreList,varAct,varAdv,varAni,varBio,varCom,varCri,varDra,varDoc,varFam,varFan,varHis,varHor,varMus,varMusical,varMys,varNew,varRel,varRom,varSci,varSpo,varThr,varWar,varWes
 
-    varAct = IntVar()
+    varDoc = IntVar()
+    varMus = IntVar()
     varAdv = IntVar()
-    varAni = IntVar()
-    varAnime = IntVar()
     varCom = IntVar()
-    varCri = IntVar()
-    varDar = IntVar()
-    varDra = IntVar()
+    varAni = IntVar()
     varFam = IntVar()
     varFan = IntVar()
-    varFic = IntVar()
     varHor = IntVar()
-    varLeg = IntVar()
-    varMus = IntVar()
-    varMys = IntVar()
-    varNar = IntVar()
+    varDra = IntVar()
+    varSpo = IntVar()
     varRom = IntVar()
-    varRomCom = IntVar()
+    varAct = IntVar()
     varSci = IntVar()
-    varSla = IntVar()
-    varSpec = IntVar()
+    varNew = IntVar()
+    varHis = IntVar()
     varThr = IntVar()
     varWes = IntVar()
+    varCri = IntVar()
+    varMys = IntVar()
+    varBio = IntVar()
+    varMusical = IntVar()
+    varWar = IntVar()
+    varRel = IntVar()
 
-    varList = [varAct,varAdv,varAni,varAnime,varCom,varCri,varDar,varDra,varFam,varFan,varFic,varHor,varLeg,varMus,varMys,varNar,varRom,varRomCom,varSci,varSla,varSpec,varThr,varWes]
+    varList = [varAct,varAdv,varAni,varBio,varCom,varCri,varDra,varDoc,varFam,varFan,varHis,varHor,varMus,varMusical,varMys,varNew,varRel,varRom,varSci,varSpo,varThr,varWar,varWes]
 
-    genreList = ['Action', 'Adventure', 'Animated', 'Anime', 'Comedy', 'Crime Fiction', 'Dark Comedy', 'Drama', 'Family', 'Fantasy', 'Fiction', 'Horror', 'Legal Drama', 'Musical', 'Mystery', 'Narrative', 'Romance', 'Romantic Comedy', 'Science Fiction', 'Slasher', 'Speculative Fiction', 'Thriller', 'Western']
+    genreList = ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Drama', 'Documentary', 'Family', 'Fantasy', 'History', 'Horror', 'Music', 'Musical', 'Mystery', 'News', 'Reality-TV','Romance', 'Sci-Fi', 'Sport', 'Thriller', 'War', 'Western']
     
 
 def AddShowConfigure():
@@ -1160,7 +1166,6 @@ def AddShow():
     global entASTitle, varList, genreList, entASFile, entASGenre, dropASType, entASLength, entASYear, selASType, accountUsernameG, entASRating
     # read from libary file
     libaryDataFrame = pd.read_csv("Files/Libary.CSV")
-
 
     # get the name of the image 
     fileName = "Movie Covers/" + entASTitle.get() + ".png"
@@ -1249,19 +1254,25 @@ def MatchMovies(x):
             dfMovieTest = pd.concat([dfMovieTest, dfTemp ])
     dfMovieTest = dfMovieTest.reset_index(drop=True)
 
-    arPrediction = NeuralNetwork(dfUser, dfMovieTest)
 
     try:
+        arPrediction = NeuralNetwork(dfUser, dfMovieTest)
         print("RUNING")
+        print("RUNING2")
         frmMatchScroll = ScrollBar(frmMatch)
+        print("RUNING3")
         
-        for item in arPrediction:
-            FillScreenMovies(item[1], frmMatchScroll)
+        for loc in range(12):
+            print("RUNING4")
+            FillScreenMovies(arPrediction[loc][1], frmMatchScroll)
+            print("RUNING5")
         print("FINISHED")
     except:
         lblMAError = Label(frmMatch, text="PLEASE RATE MORE MOVIES FOR THIS FEATURE")
         ChangeSize(lblMAError, 'Helvetica bold', int(baseSize*1.5))
         lblMAError.place(relx=0.5, rely=0.5, anchor="center")
+        print("OUT")
+    print("DONE")
 
 
 def WatchLaterLoad():
@@ -1294,7 +1305,7 @@ def ShowInfoCreate(selMovie):
 
     # collect df from users account
     dfUser = pd.read_csv("User Files/" + accountUsernameG + "/" + accountUsernameG + ".csv")
-    
+
     
     
 
@@ -1310,8 +1321,12 @@ def ShowInfoCreate(selMovie):
     ChangeSize(lblSITitle, 'Helvetica bold', int(baseSize*2.5))
     lblSITitle.place(relx=0.5, rely=0.1, anchor="center")
     
-        # save image and resize
-    imgSICover = (PhotoImage(file="Movie Covers/" + showFile )).subsample(int(multiplier-1))
+    # save image and resize
+    try:
+        imgSICover = (PhotoImage(file="Movie Covers/" + showFile)).subsample(int(multiplier - 1))
+    except:
+        imgSICover = (PhotoImage(file="Movie Covers/Empty Cover.png"))
+
     
     lblSICover = Label(frmShowInfo, image=imgSICover)
     lblSICover.place(relx=0.025, rely=0.975, anchor="sw")
@@ -1356,7 +1371,7 @@ def ShowInfoCreate(selMovie):
         ChangeSize(btnSISubmit,  'Helvetica bold', baseSize)
         btnSISubmit.place(relx=0.9, rely=0.31, anchor="center")
 
-        
+
         print("False")
     else:
         print("else")
